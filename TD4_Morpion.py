@@ -9,6 +9,8 @@ import random
 import numpy as np
 
 #%% Code Antoine
+
+# On définit le plateau de jeu
 class Morpion:
 	def __init__(self,tab=None):
 		if (tab ==None)or tab.shape!=(3,3):
@@ -24,7 +26,9 @@ class Morpion:
 			else:
 				msg += str(i)
 		return msg
-	
+
+# On renvoie une liste contenant toutes les positions qui ne sont pas occupés
+# s est le plateau
 def Action(s):
 	l = []
 	for i in range(s.shape[0]):
@@ -33,6 +37,8 @@ def Action(s):
 				l.append([i,j])
 	return l
 
+#On joue le pion sur l'emplacement 
+# s est le plateau et a?
 def Result(s,a):
 	s[a[0]][a[1]]=a[2]
 	return s
@@ -40,10 +46,12 @@ def Result(s,a):
 def Terminal_Test(s):
     #test si le jeu est fini ou non
 	flag = True
+    # On teste si il y a au moins un emplacement de vide
 	for i in range(s.shape[0]):
 		for j in range(s.shape[1]):	
 			if s[i][j] == None:
 				flag = False
+    # si il y a au moins un emplacement de vide on regarde si il y a 3 pions alignés
 	if not flag:
 		for j in range(s.shape[1]):
 			#colonnes
@@ -143,7 +151,7 @@ def MinMax(s):
 				extr = MinMax(Result(s,i+["O"]))
 		return extr
 
-mp = Morpion()
+mp = Morpion(np.array([["X",None,None],[None,None,None],[None,None,None]]))
 
 print(MinMax(mp.tab))
 
@@ -223,9 +231,130 @@ def morpion():
 
 
     
-#morpion()
+# morpion()
+
+# %%% VERSION ROMANE NE MARCHE PAS
 
 
+
+import numpy as np
+
+def MaxValue(state,joueur):
+    value=-200
+    if (Terminal(state)[0]!=False):
+        print("fin")
+        return Utility(state,joueur)
+    else:
+        for a in Actions(state):
+            value=max(value,MinValue(Result(state,a,joueur),joueur))
+    return value
+
+def MinValue(state,joueur):
+    value=200
+    if (Terminal(state)[0]!=False):
+        return Utility(state,joueur)
+    else:
+        for a in Actions(state):
+            value=min(value,MaxValue(Result(state,a,joueur),joueur))
+    return value
+
+# pb avec cette fonction car au lieu d'actualiser seulement le statetemp elle actualise aussi le state
+def Decision(state2,joueur): 
+    statetemp=[x for x in state2]
+    print("statetemppp: ",statetemp)
+    print("stat: ",state2)
+    maxAct=None
+    print("statetemppp: ",statetemp)
+    print("stat: ",state2)
+    valeurMax=MaxValue(statetemp,joueur)
+    print("statetemppp: ",statetemp)
+    print("stat: ",state2)
+    
+    print("maxxx",valeurMax)
+    print("stateee: ",state2)
+    for a in Actions(state2):
+        print("actionnn: ",a)
+        print("dddddd",MaxValue(Result(statetemp,a,joueur),joueur))
+        if MaxValue(Result(statetemp,a,joueur),joueur)==valeurMax:
+            maxAct=a
+    return maxAct
+    
+
+print(Decision(plateauTest,1))    
+
+plateau=np.zeros((3,3))
+plateauTest=[[-1,1,0],[1,0,1],[-1,-1,1]]
+
+# un état est la disposition d'un plateau avec les cases remplies et vides
+# exemple de state:[[1,2,1],[1,2,0],[0,0,0]]
+# -1 pour l'adversaire et 1 pour nous
+
+def Actions(plateau):
+    act=[]
+    for i in range(len(plateau)):
+        for j in range(len(plateau[0])):
+            if plateau[i][j]==0:
+                act.append([i,j])
+    return act
+
+
+def Terminal(plateau):
+    res=False
+    symbolJoueur=0
+    partieTerminee=False
+    # on gère les colonnes
+    if (plateau[0][0]==plateau[1][1]==plateau[2][2]!=0):
+        res=True
+        symbolJoueur=plateau[0][0]
+    elif (plateau[0][2]==plateau[1][1]==plateau[2][0]!=0):
+        res=True
+        symbolJoueur=plateau[0][2]
+    # on gère les lignes
+    for i in plateau:
+        if(i[0]==i[1]==i[2]!=0):
+            res=True
+            symbolJoueur=i[1]
+    # on gère les colonnes
+    for j in range(3):
+        if (plateau[0][j]==plateau[1][j]==plateau[2][j]!=0):
+            res=True
+            symbolJoueur=plateau[1][j]
+    # match nul
+    presenceZero=[x[i] for x in plateau for i in range(3) if x[i]==0]
+    if len(presenceZero)==0:
+        partieTerminee=True    
+    return None if partieTerminee==True and res==False else res,symbolJoueur
+
+
+def Utility(plateau,joueur):
+    resultatPartie=0
+    res=Terminal(plateau)
+    if (res[0]==None):
+        # match nul
+        resultatPartie+=1
+    else:
+        if (res[1]==joueur):
+            # le joueur a gagné
+            resultatPartie+=10
+        else:
+            # le joueur a perdu
+            resultatPartie-=10
+    return resultatPartie
+        
+
+def Result(plateau,a,joueur):
+    plateau[a[0]][a[1]]=joueur
+    return plateau
+    
+# joueur1 est l'IA (max)
+def Minmax(plateau,joueur1,joueur2):
+    joueur=joueur1
+    if (Terminal(plateau)):
+        return Utility(plateau,joueur)
+    elif(joueur==joueur1):
+        Decision(plateau)
+    else:
+        Decision(plateau)
 
 
 
