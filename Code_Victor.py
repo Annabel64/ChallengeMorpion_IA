@@ -89,17 +89,17 @@ def Terminal_Test(p,x,y):
 plateau=Plateau()
 print(plateau)
 plateauTest=np.array([['x','x','o','x',None,None,None,None,None,None,None,None],
-                      [None,None,None,None,None,'o',None,'o',None,None,None,None],
-                      [None,None,None,None,None,'x','x',None,None,None,None,None],
+                      [None,None,None,None,None,'o',None,'x',None,None,None,None],
+                      [None,None,None,None,None,'x','o',None,None,None,None,None],
                       [None,None,None,'o',None,'x',None,None,None,None,None,None],
                       [None,None,None,None,'x','x',None,None,'x','x',None,None],
                       [None,None,None,None,None,'o',None,None,'o',None,None,None],
                       [None,None,None,None,None,None,'o','o','o','x',None,None],
-                      [None,None,None,'x',None,None,'o',None,'x',None,None,None],
+                      [None,None,None,'o',None,None,'o',None,'x',None,None,None],
                       ['x',None,'x',None,None,'x','o',None,'o',None,None,None],
                       [None,'x',None,None,'o',None,'x',None,'x',None,None,None],
                       ['x',None,'o',None,None,None,None,'x',None,None,None,None],
-                      [None,None,None,'x',None,None,None,None,'o',None,None,None]])
+                      [None,None,None,'x',None,None,None,None,'x',None,None,None]])
 
 # plateauTest=np.array([['x','o','x','x','o','x','o','x','o','x','o','x'],
 #                       ['o','o','x','x','x','o','o','o','x','o','x','o'],
@@ -181,11 +181,11 @@ def Utility(p):#n'est utlisé que sur un plateau dont la partie est fini
                         if (p[x-3+k][y-3+k]==p[x-2+k][y-2+k]==p[x-1+k][y-1+k]==p[x+k][y+k]!=None):
                             presenceGagnantTemp=True
                             indy=y
-                if presenceGagnantTemp:
-                    if p[x][indy]=='x':
-                        score=1
-                    else:
-                        score=-1
+            if presenceGagnantTemp:
+                if p[x][indy]=='x':
+                    score=1
+                else:
+                    score=-1
             presenceGagnant=presenceGagnantTemp      
     # on vérifie sur les diagonales à pente positive s'il y a un gagnant, si x (l'IA) gagne, le score vaut 1 sinon -1 si match null        
     if not presenceGagnant:
@@ -198,11 +198,11 @@ def Utility(p):#n'est utlisé que sur un plateau dont la partie est fini
                         if (p[x-3+k][y+3-k]==p[x-2+k][y+2-k]==p[x-1+k][y+1-k]==p[x+k][y-k]!=None):                            
                             presenceGagnantTemp=True
                             indy=y
-                if presenceGagnantTemp:
-                    if p[x][indy]=='x':
-                        score=1
-                    else:
-                        score=-1
+            if presenceGagnantTemp:
+                if p[x][indy]=='x':
+                    score=1
+                else:
+                    score=-1
     return score
         
 print(Utility(pTest.tab))        
