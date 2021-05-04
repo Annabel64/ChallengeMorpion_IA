@@ -5,6 +5,18 @@ Created on Sat May  1 13:39:45 2021
 @author: rayan
 """
 
+#%% A faire dans l'ordre
+
+#méthode de décision (minmax)
+#programme final qui regroupe tout
+#faire ça : "Les IA devront reposer sur un Minimax avec id´ealement un ´elagage Alpha-Beta" (faire en sorte de ne pas regarder les options inintéressantes)
+#retester dans le programme final
+#euristique (repérer là où est la densité la plus importante de pions ennemis, pour repérer la zone la plus "dangereuse" pour nous))
+#l'intégrer
+
+#%%
+
+
 import numpy as np
 
 # symbolJoueur vaut soit "x" soit "o"
@@ -38,14 +50,15 @@ def Action(p):
 				l.append([i,j])
 	return l
 
-# On actualise le plateau du jeu
 def Result(p,a,symbolJoueur):
+    """actualise le plateau du jeu"""
 	p[a[0]][a[1]]=symbolJoueur
 	return p
 
 
 # i,j sont les coord du pion qui vient juste d'être posé
 def Terminal_Test(p):
+    """renvoie True si il y a un gagnant, False si il n'y en a pas et None si match nul"""
     # on vérifie que le plateau n'est pas entièrement rempli
     plateauRempli=False
     caseVide=[x[i] for x in p for i in range(12) if x[i]==None]
@@ -86,6 +99,16 @@ def Terminal_Test(p):
 # Un joueur joue, puis on appelle TerminalTest. Si TerminalTest retourne None alors c'est un match nul,
 # Si elle renvoie False, il n'y a pas encore de gagnant et le plateau n'est pas rempli donc la partie peut continuer
 # Si elle renvoie True alors le joueur qui vient de jouer à gagné.
+
+def Utility(p,symbolJoueur):#n'est utlisé que sur un plateau dont la partie est fini
+    """met 0 pour un match nul, 1 si l'IA gagne et -1 si elle perd"""
+    resultat=Terminal_Test(p)
+    score=0
+    if (resultat==True and symbolJoueur=="x"):
+        score=1
+    elif (resultat==True and symbolJoueur=="o"):
+        score=-1
+    return score
 
 
 
@@ -135,100 +158,12 @@ print(Terminal_Test(pTest.tab))
 # print(Terminal_Test(pTest.tab,10,2))
 # print(Terminal_Test(pTest.tab,11,3)) 
 
-
-#%% Code Victor
-
-# CODE INUTILE MAIS LAISSE AU CAS OU
-
-# def Utility(p):#n'est utlisé que sur un plateau dont la partie est fini
-#     score=0
-#     presenceGagnant=False
-#     for i in range(p.shape[0]):
-#         indj=0
-#         presenceGagnantTemp=False
-#         for j in range(p.shape[1]-3):
-#             if(p[i][j]==p[i][j+1]==p[i][j+2]==p[i][j+3]!=None):
-#                 presenceGagnantTemp=True
-#                 indj=j
-#         if presenceGagnantTemp:
-#             if p[i][indj]=='x':
-#                 score=1
-#             else:
-#                 score=-1
-#         presenceGagnant=presenceGagnantTemp
-#     if not presenceGagnant:           
-            
-# # on vérifie sur les colonnes s'il y a un gagnant, si x (l'IA) gagne, le score vaut 1 sinon -1 et 0 si match null
-#         for j in range(p.shape[1]):
-#             indi=0
-#             presenceGagnantTemp=False
-#             for i in range(p.shape[0]-3):
-#                 if(p[i][j]==p[i+1][j]==p[i+2][j]==p[i+3][j]!=None):
-#                     presenceGagnantTemp=True
-#                     indi=i
-#             if presenceGagnantTemp:
-#                 if p[indi][j]=='x':
-#                     score=1
-#                 else:
-#                     score=-1
-#             presenceGagnant=presenceGagnantTemp        
-   
-                
-#     # on vérifie sur les diagonales à pente positive( et non négative comme tu avais mis ) s'il y a un gagnant, si x (l'IA) gagne, le score vaut 1 sinon -1 si match null
-#     if not presenceGagnant:
-#         for x in range(3,p.shape[0]):
-#             indy=0
-#             presenceGagnantTemp=False
-#             for y in range(3,p.shape[1]):
-#                 for k in range (4):
-#                     if (x-3+k>-1 and x-2+k>-1 and x-1+k>-1 and x+k>-1 and x-3+k<12 and x-2+k<12 and x-1+k<12 and x+k<12 and y-3+k>-1 and y-2+k>-1 and y-1+k>-1 and y+k>-1 and y-3+k<12 and y-2+k<12 and y-1+k<12 and y+k<12):
-#                         if (p[x-3+k][y-3+k]==p[x-2+k][y-2+k]==p[x-1+k][y-1+k]==p[x+k][y+k]!=None):
-#                             presenceGagnantTemp=True
-#                             indy=y
-#             if presenceGagnantTemp:
-#                 if p[x][indy]=='x':
-#                     score=1
-#                 else:
-#                     score=-1
-#             presenceGagnant=presenceGagnantTemp      
-#     # on vérifie sur les diagonales à pente négative( et non positive ) s'il y a un gagnant, si x (l'IA) gagne, le score vaut 1 sinon -1 si match null        
-#     if not presenceGagnant:
-#         for x in range(3,p.shape[0]):
-#             indy=0
-#             presenceGagnantTemp=False
-#             for y in range(p.shape[1]-3):
-#                 for k in range (4):
-#                     if (x-3+k>-1 and x-2+k>-1 and x-1+k>-1 and x+k>-1 and x-3+k<12 and x-2+k<12 and x-1+k<12 and x+k<12 and y+3-k>-1 and y+2-k>-1 and y+1-k>-1 and y-k>-1 and y+3-k<12 and y+2-k<12 and y+1-k<12 and y-k<12):
-#                         if (p[x-3+k][y+3-k]==p[x-2+k][y+2-k]==p[x-1+k][y+1-k]==p[x+k][y-k]!=None):                            
-#                             presenceGagnantTemp=True
-#                             indy=y
-#             if presenceGagnantTemp:
-#                 if p[x][indy]=='x':
-#                     score=1
-#                 else:
-#                     score=-1
-#     return score
-        
-
-
-def Utility(p,symbolJoueur):#n'est utlisé que sur un plateau dont la partie est fini
-# on met 0 pour un match nul, 1 si l'IA gagne et -1 si elle perd
-    resultat=Terminal_Test(p)
-    score=0
-    if (resultat==True and symbolJoueur=="x"):
-        score=1
-    elif (resultat==True and symbolJoueur=="o"):
-        score=-1
-    return score
-
 print(Utility(pTest.tab,'x'))
-
 
 #%%
 
-
-
 def MaxValue(p):
+    """retourne le max des options que l'adversaire nous laisse jouer (parmis tous les min restant)"""
     value=-200
     if (Terminal_Test(p)!=False):
         print("fin")
@@ -239,6 +174,7 @@ def MaxValue(p):
     return value
 
 def MinValue(p):
+    """retourne le min des options parmis tous les max restant"""
     value=200
     if (Terminal_Test(p)!=False):
         return Utility(p)
@@ -248,7 +184,10 @@ def MinValue(p):
     return value
 
 # pb avec cette fonction car au lieu d'actualiser seulement le statetemp elle actualise aussi le state
-def Decision(state2): 
+def Decision(state2):
+    """prend la décision de l'action que l'on va jouer"""
+    #les print sont juste des tests
+    #POURQUOI STATE2 CHANGE ?? STATETEMPP EST UNE SIMULATION
     statetemp=np.array([x for x in state2])
     print("statetemppp: ",statetemp)
     print("stat: ",state2)
@@ -267,7 +206,7 @@ def Decision(state2):
         if MaxValue(Result(statetemp,a,'x'))==valeurMax:
             maxAct=a
     return maxAct
-    
+ 
 # %% TESTS
 
 plateauTest=np.array([[None,None,None,None,None,None,None,None,None,None,None,None],
