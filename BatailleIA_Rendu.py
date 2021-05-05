@@ -315,7 +315,7 @@ def abSearch(plateau,symbolJoueur):
     value=MaxValue_ab(plateau,-20000, 20000, symbolJoueur)
     res=Action(plateau)[0]
     for a in Action(plateau):
-        if value==Utility(Result(plateau, a, symbolJoueur),symbolJoueur):            
+        if value>MaxValue_ab(Result(plateau,a,symbolJoueur),-200000, 200000, symbolJoueur):            
             res=a
         Result(plateau, a, None)  
     return res
