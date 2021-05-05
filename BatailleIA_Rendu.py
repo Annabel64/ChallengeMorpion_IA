@@ -49,7 +49,7 @@ def Action(plateau):
                 l.append([i,j])
     return l
 
-def Joue(plateau,a,symbolJoueur):
+def Result(plateau,a,symbolJoueur):
     """actualise le plateau du jeu en ajoutant le pion du joueur en a=[x,y]"""
     x,y=a[0],a[1]
     plateau.tab[x][y]=symbolJoueur
@@ -149,43 +149,103 @@ def Utility(plateau,symbolJoueur):#n'est utlisé que sur un plateau dont la part
 #     return maxAct
 
 
-def MinMax(plateau,symbolJoueur):
-    """retourne le meilleur coup"""
-    #--> le meilleur coup est celui qui retourne Utility(joueur)=1 ou qui empeche Utility(adversaire)=1
-    #on privilégie l'attaque si elle permet de gagner
-    #si on ne peut pas gagner, on privilégie la défence si elle permet de ne pas perdre
-    #si on ne peut pas perdre ni gagner, on attaque
+            
+
+# def Choix(plateau,symbolJoueur):
+#     """retourne le meilleur coup"""
+#     #--> le meilleur coup est celui qui retourne Utility(joueur)=1 ou qui empeche Utility(adversaire)=1
+#     #on privilégie l'attaque si elle permet de gagner
+#     #si on ne peut pas gagner, on privilégie la défence si elle permet de ne pas perdre
+#     #si on ne peut pas perdre ni gagner, on attaque
     
-    listePlaces=Action(plateau) #liste des places libres à jouer
-    copiePlateau=copy(plateau)
-    meilleurCoup=listePlaces[0]
-    #on recherche si on a un coup qui peut nous faire gagner
-    for place in listePlaces:
-        if()
+#     #on copie le plateau pour éviter de le modifier accidentellement
+#     copiePlateau=Plateau()
+#     copiePlateau.tab=np.array(plateau.tab)
     
+#     symbolAdversaire=''
+#     if symbolJoueur=='x':symbolAdversaire='o'
+#     else: symbolAdversaire='x'
     
-    return meilleurCoup
+#     listePlaces=Action(plateau) #liste des places libres à jouer
+#     meilleurCoup=listePlaces[0]
+        
+       
+#     # 1) on recherche le meilleur coup ie. si une place peut nous faire gagner
+#     for place in listePlaces:
+#         #si le utility de la place vaut 1, meilleurcoup=place
+#         if(Utility(Joue(copiePlateau,place,symbolJoueur),symbolJoueur)==1):
+#             meilleurCoup=place
+#             break;
+#             #on arrête le programme, le coup qui permet de gagner a été trouvé
+#         copiePlateau.tab=np.array(plateau.tab)
+
+    
+#     # 2) si le meilleur coup ne peut pas nous faire gagner, on regarde si un coup de l'ennemi peut nous faire perdre
+#     if Utility(Joue(copiePlateau,meilleurCoup,symbolJoueur),symbolJoueur)==0:
+#         for place in listePlaces:
+#         #si le utility de la place vaut 1, ie. l'adversaire peut gagner, on doit jouer à cette place: meilleurcoup=place
+#             if(Utility(Joue(copiePlateau,place,symbolAdversaire),symbolAdversaire)==1):
+#                 meilleurCoup=place
+#                 break;
+#                 # on arrête le programme, le coup qui permet de ne pas perdre a été trouvé
+#             copiePlateau.tab=np.array(plateau.tab)
+        
+        
+#     # 3) si aucun coup ne peut ni nous faire gagner ni empêcher qu'on perde, on va placer un pion là où la densité de nos pions est maximale
+#     if Utility(Joue(copiePlateau,meilleurCoup,symbolAdversaire),symbolAdversaire)==0:
+#             meilleurCoup=1
+
+
+#     return meilleurCoup
+        
+        
+def MinMax(plateau,symbolJoueur,rslt=0):
+    """retourne le nombre de coups au prochain tour qui peuvent mener à la victoire finale"""
+    #méthode récursive
+    #retourne le Utility() du meilleur coup
+    if Terminal_Test(plateau):
+        return rslt+Utility(plateau,symbolJoueur)
+    
+    elif symbolJoueur=='x':
+        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur,rslt+1)
+        for i in Action(plateau):
+            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt)>extr:
+                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt+1)
+        return extr
+    else :
+        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur,rslt)
+        for i in Action(plateau):
+            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt-1)<extr:
+                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt-1)
+        return extr
+
+
+
+
+
 
 # %% TESTS
 
     
 plateau=Plateau()
-plateau.tab=np.array([['x','x','x','o',None,None,None,None,None,None,None,None],
+plateau.tab=np.array([['x','x','x',None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,'x',None,None,None,None,None,None],
                       [None,None,None,None,None,'o',None,None,None,None,None,None],
                       [None,None,None,'o',None,'x',None,None,None,None,None,None],
-                      [None,None,None,None,None,'x',None,None,'x',None,None,None],
-                      [None,None,None,None,None,'o',None,None,'o',None,None,None],
-                      [None,None,None,None,None,None,'o',None,None,None,None,None],
+                      [None,None,None,None,None,'x',None,'x','x',None,None,None],
+                      [None,None,None,None,None,'o',None,'o','o',None,None,None],
+                      [None,None,'x',None,None,None,'o',None,None,None,None,None],
                       [None,None,None,'x',None,None,'o',None,None,None,None,None],
                       ['o',None,None,None,'x',None,None,None,None,None,None,None],
                       [None,'o',None,None,None,None,None,None,'o',None,None,None],
-                      [None,None,'x',None,None,None,None,None,None,None,None,None],
+                      [None,None,'x',None,None,None,None,None,None,'o',None,None],
                       [None,'x',None,'o',None,None,None,None,None,None,None,None]])
 
 
+
+
 #Affichache du tableau : MARCHE
-# print(plateau) 
+print(plateau) 
 #Terminal_Test : MARCHE
 # print(Terminal_Test(plateau)) 
 
@@ -198,8 +258,6 @@ plateau.tab=np.array([['x','x','x','o',None,None,None,None,None,None,None,None],
 # print("pTest après\n",plateau,sep="")
 
 #Méthode utility : MARCHE
-#print(Utility(plateau,'x')) 
+#print(Utility(plateau,'x'))
 
-
-print(Decision(plateau,'x'))  
-# print(Utility(pTest.tab))  
+print(MinMax(plateau,'x'))

@@ -138,7 +138,7 @@ def MinMax(s):
     #retourne le Utility() du meilleur coup
 	if Terminal_Test(s):
 		return Utility(s)
-	elif (np.count_nonzero(s == "X"))<=(np.count_nonzero(s == "O")):
+	elif (np.count_nonzero(s == "X"))<=(np.count_nonzero(s == "O")): #pour savoir à qui c'est le tour
 		extr = MinMax(Result(s,Action(s)[0]+["X"]))
 		for i in Action(s):
 			if MinMax(Result(s,i+["X"]))>extr:
