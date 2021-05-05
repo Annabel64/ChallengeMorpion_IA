@@ -226,11 +226,11 @@ def MinMax(plateau,symbolJoueur):
 
 #%% BOUCLE FINALE
 
+
 def BoucleFinale():
     plateau=Plateau()
-    
-    while not Terminal_Test(plateau):
-        tour=1
+    tour=1
+    while not Terminal_Test(plateau):        
         print("Tour numéro ",tour,' :\n')
         
         if(tour%2==0):
@@ -255,7 +255,10 @@ def BoucleFinale():
         print("Match nul")
     else :
         #méthode afin de déterminer le gagnant : est-ce qu'on modifie Terminal_Test ? Nouvelle méthode ?
-        
+        if(tour%2==0): # alors le prochain a joué est 'x' donc celui qui vient de jouer est 'o'
+            print('Le joueur avec les pions "o" a gagné')
+        else:
+            print('Le joueur avec les pions "o" a gagné')
         
     
     
