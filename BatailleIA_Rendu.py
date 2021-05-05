@@ -199,28 +199,69 @@ def Utility(plateau,symbolJoueur):#n'est utlisé que sur un plateau dont la part
 #     return meilleurCoup
         
         
-def MinMax(plateau,symbolJoueur,rslt=0):
-    """retourne le nombre de coups au prochain tour qui peuvent mener à la victoire finale"""
+def MinMax(plateau,symbolJoueur):
+    """retourne l'utility du meilleur coup"""
+    
+    #A FAIRE : je veux retourner une liste des meilleurs coups à faire
     #méthode récursive
-    #retourne le Utility() du meilleur coup
+    
     if Terminal_Test(plateau):
-        return rslt+Utility(plateau,symbolJoueur)
+        return Utility(plateau,symbolJoueur)
     
     elif symbolJoueur=='x':
-        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur,rslt+1)
+        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
         for i in Action(plateau):
-            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt)>extr:
-                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt+1)
+            #print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
+            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)>extr:
+                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
         return extr
     else :
-        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur,rslt)
+        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
         for i in Action(plateau):
-            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt-1)<extr:
-                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur,rslt-1)
+            #print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
+            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)<extr:
+                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
         return extr
 
 
+#%% BOUCLE FINALE
 
+def BoucleFinale():
+    plateau=Plateau()
+    
+    while not Terminal_Test(plateau):
+        tour=1
+        print("Tour numéro ",tour,' :\n')
+        
+        if(tour%2==0):
+            symbolJoueur='x'
+            
+            #on détermine le meilleur coup à jouer grâce à MinMax
+            coup=[0,0] #juste pour le test
+            
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        else:
+            symbolJoueur='o'
+            
+            #on détermine le meilleur coup à jouer grâce à MinMax
+            coup=[0,0] #juste pour le test
+            
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        tour+=1
+    
+    if(Terminal_Test(plateau)==None):
+        print("Match nul")
+    else :
+        #méthode afin de déterminer le gagnant : est-ce qu'on modifie Terminal_Test ? Nouvelle méthode ?
+        
+        
+    
+    
+    
+    
+    
 
 
 
@@ -228,7 +269,7 @@ def MinMax(plateau,symbolJoueur,rslt=0):
 
     
 plateau=Plateau()
-plateau.tab=np.array([['x','x','x',None,None,None,None,None,None,None,None,None],
+plateau.tab=np.array([['x','x','o',None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,'x',None,None,None,None,None,None],
                       [None,None,None,None,None,'o',None,None,None,None,None,None],
                       [None,None,None,'o',None,'x',None,None,None,None,None,None],
@@ -250,7 +291,7 @@ print(plateau)
 # print(Terminal_Test(plateau)) 
 
 #Méthode Action : MARCHE
-#print(Action(plateau.tab))
+#print(Action(plateau))
  
 #Méthode Result : MARCHE
 # print("pTest avant\n",plateau,sep="")
