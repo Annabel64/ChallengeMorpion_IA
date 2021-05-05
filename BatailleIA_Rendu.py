@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat May  1 13:39:45 2021
+Created on Wed May  5 15:53:23 2021
 
-@author: rayan
+@author: victo
 """
-import numpy as np
 
 #%% A faire dans l'ordre
 
@@ -18,7 +17,7 @@ import numpy as np
 #%% classe Plateau
 
 # symbolJoueur vaut soit "x" soit "o"
-
+import numpy as np
 # On définit le plateau
 class Plateau:    
     def __init__(self,tab=np.array([[None for x in range(12)] for x in range(12)])):
@@ -37,6 +36,7 @@ class Plateau:
             msg+="\n"
         return msg
 
+    
 #%% Méthodes pour jouer
 
 
@@ -51,8 +51,8 @@ def Action(plateau):
 
 def Result(plateau,a,symbolJoueur):
     """actualise le plateau du jeu en ajoutant le pion du joueur en a=[x,y]"""
-    x,y=a[0],a[1]
-    plateau.tab[x][y]=symbolJoueur
+    x,y=a[0],a[1]    
+    plateau.tab[x][y]=symbolJoueur    
     return plateau
 
 
@@ -108,45 +108,54 @@ def Utility(plateau,symbolJoueur):#n'est utlisé que sur un plateau dont la part
         score=-1
     return score
 
-# def MaxValue(plateau,symbolJoueur):
-#     """retourne le max des options que l'adversaire nous laisse jouer (parmis tous les min restant)"""
-#     value=-200
-#     if (Terminal_Test(plateau)!=False):
-#         print("fin")
-#         return Utility(plateau,symbolJoueur)
-#     else:
-#         for a in Action(plateau):
-#             value=max(value,MinValue(Joue(plateau,a,'x'),symbolJoueur))
-#     return value
+def MaxValue(plateau,symbolJoueur):
+    """retourne le max des options que l'adversaire nous laisse jouer (parmis tous les min restant)"""
+    value=-2000
+    if (Terminal_Test(plateau)!=False):
+        print("fin")
+        return Utility(plateau,symbolJoueur)
+    else:
+        for a in Action(plateau):
+            Result(plateau, a,None)#On revien en arrière pour ne pas modifier le plateau
+            value=max(value,MinValue(Result(plateau,a,'o'),'x'))#Pour l'instant j'ai forcé l'IA à prendre les x et l'adversaire les o
+            #on poura modifier ça quand on fera l'interface console
+            Result(plateau, a,None)#On revien en arrière pour ne pas modifier le plateau
+    return value
 
-# def MinValue(plateau,symbolJoueur):
-#     """retourne le min des options parmis tous les max restant"""
-#     value=200
-#     if (Terminal_Test(plateau)!=False):
-#         return Utility(plateau,symbolJoueur)
-#     else:
-#         for a in Action(plateau):
-#             value=min(value,MaxValue(Joue(plateau,a,'x'),symbolJoueur))
-#     return value
+def MinValue(plateau,symbolJoueur):
+    """retourne le min des options parmis tous les max restant"""
+    value=2000
+    if (Terminal_Test(plateau)!=False):
+        return Utility(plateau,symbolJoueur)
+    else:
+        for a in Action(plateau):
+            Result(plateau, a,None)#On revien en arrière pour ne pas modifier le plateau
+            value=min(value,MaxValue(Result(plateau,a,'x'),'o'))
+            Result(plateau,a,None)#On revien en arrière pour ne pas modifier le plateau
+            print(plateau)
+    return value
 
 
-# # pb avec cette fonction car au lieu d'actualiser seulement le statetemp elle actualise aussi le state
-# def Decision(plateau,symbolJoueur):
-#     """retourne la décision de l'action que l'on va jouer sous forme de coordonnées de l'emplacement à jouer"""
-#     #plateau doit rester le même, on ne modifiera que copiePlateau qui servira pour les simulations
-#     copiePlateau=plateau
-#     print("plateau:\n",plateau,sep="")
-#     print("copiePlateau:\n",copiePlateau,sep="")
     
-#     listePlaces=Action(plateau)
-#     maxAct=listePlaces[0]
-#     valeurMax=MaxValue(copiePlateau,symbolJoueur)
+# pb avec cette fonction car au lieu d'actualiser seulement le statetemp elle actualise aussi le state
+def Decision(plateau,symbolJoueur):
+    """retourne la décision de l'action que l'on va jouer sous forme de coordonnées de l'emplacement à jouer"""
+    #plateau doit rester le même, on ne modifiera que Plateau mais on reviens en arrière tout avant d'utiliser une autre
+    # fonction utilisant le plateau de base 
     
-#     for place in Action(plateau):
-#         print("action: ",place)
-#         if MaxValue(Joue(copiePlateau,place,'x'),symbolJoueur)<valeurMax:
-#             maxAct=place
-#     return maxAct
+    print("plateau:\n",plateau,sep="")
+    
+    
+    listePlaces=Action(plateau)
+    maxAct=listePlaces[0]
+    valeurMax=MaxValue(plateau,symbolJoueur)
+    
+    for place in Action(plateau):
+        print("action: ",place)
+        if MaxValue(Result(plateau,place,'x'),symbolJoueur)>valeurMax:
+            maxAct=place
+        Result(plateau, place,None)
+    return maxAct
 
 
             
@@ -199,31 +208,39 @@ def Utility(plateau,symbolJoueur):#n'est utlisé que sur un plateau dont la part
 #     return meilleurCoup
         
         
-def MinMax(plateau,symbolJoueur):
-    """retourne l'utility du meilleur coup"""
+# def MinMax(plateau,symbolJoueur):
+#     """retourne l'utility du meilleur coup"""
     
-    #A FAIRE : je veux retourner une liste des meilleurs coups à faire
-    #méthode récursive
+#     #A FAIRE : je veux retourner une liste des meilleurs coups à faire
+#     #méthode récursive (Plus besoin de la faire vu que la fonction decision renvoi la meilleur valeur)
     
-    if Terminal_Test(plateau):
-        return Utility(plateau,symbolJoueur)
+#     if Terminal_Test(plateau):
+#         return Utility(plateau,symbolJoueur)
     
-    elif symbolJoueur=='x':
-        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
-        for i in Action(plateau):
-            #print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
-            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)>extr:
-                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
-        return extr
-    else :
-        extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
-        for i in Action(plateau):
-            #print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
-            if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)<extr:
-                extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
-        return extr
-
-
+#     elif symbolJoueur=='x':
+#         extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
+#         # print(extr)
+#         Result(plateau,Action(plateau)[0],None)
+#         for i in Action(plateau):
+#             # print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
+            
+#             if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)>extr:
+#                 Result(plateau,i,None)
+#                 extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
+                
+#             Result(plateau,i,None)
+#         return extr
+#     else :
+#         extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
+#         Result(plateau,i,None)
+#         for i in Action(plateau):
+#             # print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
+#             if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)<extr:
+#                 Result(plateau,i,None)
+#                 extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
+                
+#             Result(plateau,i,None)
+#         return extr
 #%% BOUCLE FINALE
 
 
@@ -260,41 +277,48 @@ def BoucleFinale():
         else:
             print('Le joueur avec les pions "o" a gagné')
         
-    
-    
-    
-    
-    
 
-
+#A faire elagage alpha/beta pour optimiser l'algo
 
 # %% TESTS
 
     
 plateau=Plateau()
-plateau.tab=np.array([['x','x','o',None,None,None,None,None,None,None,None,None],
+plateau.tab=np.array([['x','x','x','o',None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,'x',None,None,None,None,None,None],
                       [None,None,None,None,None,'o',None,None,None,None,None,None],
                       [None,None,None,'o',None,'x',None,None,None,None,None,None],
-                      [None,None,None,None,None,'x',None,'x','x',None,None,None],
-                      [None,None,None,None,None,'o',None,'o','o',None,None,None],
-                      [None,None,'x',None,None,None,'o',None,None,None,None,None],
-                      [None,None,None,'x',None,None,'o',None,None,None,None,None],
+                      [None,None,None,None,None,'x','o','x','x',None,None,None],
+                      [None,None,None,None,None,'o','o','x','o',None,None,None],
+                      [None,None,'x',None,None,None,None,None,None,None,None,None],
+                      [None,None,None,'o',None,None,None,None,None,None,None,None],
                       ['o',None,None,None,'x',None,None,None,None,None,None,None],
                       [None,'o',None,None,None,None,None,None,'o',None,None,None],
                       [None,None,'x',None,None,None,None,None,None,'o',None,None],
                       [None,'x',None,'o',None,None,None,None,None,None,None,None]])
 
-
+# plateau=Plateau()
+# plateau.tab=np.array([['x','o',None,None,'x',None,'x','o','x',None,'x','o'],
+#                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,None,'o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+#                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None]])
 
 
 #Affichache du tableau : MARCHE
 print(plateau) 
 #Terminal_Test : MARCHE
-# print(Terminal_Test(plateau)) 
+print(Terminal_Test(plateau)) 
 
 #Méthode Action : MARCHE
-#print(Action(plateau))
+# print(Action(plateau))
  
 #Méthode Result : MARCHE
 # print("pTest avant\n",plateau,sep="")
@@ -302,6 +326,8 @@ print(plateau)
 # print("pTest après\n",plateau,sep="")
 
 #Méthode utility : MARCHE
-#print(Utility(plateau,'x'))
-
-print(MinMax(plateau,'x'))
+# print(Utility(plateau,'x'))
+# print(MinMax(plateau,'x'))
+# print(Action(plateau))
+# print(Result(plateau,Decision(plateau,'x'),'x'))
+print(Decision(plateau, 'x'))
