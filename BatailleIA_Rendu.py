@@ -137,7 +137,7 @@ def MinValue(plateau,symbolJoueur):
 
 
     
-# pb avec cette fonction car au lieu d'actualiser seulement le statetemp elle actualise aussi le state
+
 def Decision(plateau,symbolJoueur):
     """retourne la décision de l'action que l'on va jouer sous forme de coordonnées de l'emplacement à jouer"""
     #plateau doit rester le même, on ne modifiera que Plateau mais on reviens en arrière tout avant d'utiliser une autre
@@ -278,7 +278,48 @@ def BoucleFinale():
             print('Le joueur avec les pions "o" a gagné')
         
 
-#A faire elagage alpha/beta pour optimiser l'algo
+#%% Elagage alpha/Beta (ça marche)
+
+def MaxValue_ab(plateau,alpha,beta,symbolJoueur):
+    value=-20000
+    if (Terminal_Test(plateau)!=False):
+        print("fin")
+        return Utility(plateau,symbolJoueur)
+    for a in Action(plateau):
+        Result(plateau, a,None)
+        value=max(value,MinValue_ab(Result(plateau,a,'o'),alpha,beta,'x'))
+        print(plateau)
+        Result(plateau, a,None)
+        if value>=beta:
+            return value
+        alpha=max(alpha,value)
+    return value
+
+def MinValue_ab(plateau,alpha,beta,symbolJoueur):
+    value=20000
+    if (Terminal_Test(plateau)!=False):
+        print("fin")
+        return Utility(plateau,symbolJoueur)
+    for a in Action(plateau):
+        Result(plateau, a,None)
+        value=min(value,MaxValue_ab(Result(plateau,a,'x'),alpha,beta,'o'))
+        print(plateau)
+        Result(plateau, a,None)
+        if value<=alpha:
+            return value
+        beta=min(beta,value)
+    return value            
+
+
+def abSearch(plateau,symbolJoueur):
+    value=MaxValue_ab(plateau,-20000, 20000, symbolJoueur)
+    res=Action(plateau)[0]
+    for a in Action(plateau):
+        if value==Utility(Result(plateau, a, symbolJoueur),symbolJoueur):            
+            res=a
+        Result(plateau, a, None)  
+    return res
+    
 
 # %% TESTS
 
@@ -330,4 +371,5 @@ print(Terminal_Test(plateau))
 # print(MinMax(plateau,'x'))
 # print(Action(plateau))
 # print(Result(plateau,Decision(plateau,'x'),'x'))
-print(Decision(plateau, 'x'))
+# print(Decision(plateau, 'x'))
+print(abSearch(plateau, 'x'))
