@@ -138,7 +138,7 @@ def Decision(plateau,symbolJoueur):
     
     for place in Action(plateau):
         print("action: ",place)
-        if MaxValue(Result(plateau,place,'x'),symbolJoueur)<valeurMax:
+        if MaxValue(Result(plateau,place,'x'),symbolJoueur)>valeurMax:
             maxAct=place
         Result(plateau, place,None)
     return maxAct
@@ -180,7 +180,7 @@ def abSearch(plateau,symbolJoueur):
     print(value)
     for a in Action(plateau):
         print(Utility(Result(plateau, a, symbolJoueur),symbolJoueur))
-        if value>MaxValue_ab(Result(plateau,a,symbolJoueur),-200000, 200000, symbolJoueur):            
+        if value<MinValue(Result(plateau,a,symbolJoueur),'x'):            
             res=a
         print(Result(plateau, a, symbolJoueur))
         Result(plateau, a, None)  
@@ -272,10 +272,10 @@ def abSearch(plateau,symbolJoueur):
 # %% TESTS
 
 plateau=Plateau()
-plateau.tab=np.array([['x','x',None,None],
-                     [None,None,None,None],
-                     [None,None,'o',None],
-                     [None,None,None,'o']])
+plateau.tab=np.array([[None,'x','x','o'],
+                     ['o','x',None,'o'],
+                     [None,None,'o','x'],
+                     ['o',None,'x','o']])
 
 
 # plateau.tab=np.array([['x','o',None,None,'x',None,'x','o','x',None,'x','o'],
