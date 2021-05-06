@@ -91,33 +91,33 @@ def Utility(plateau,symbolJoueur):#n'est utlisé que sur un plateau dont la part
     resultat=Terminal_Test(plateau)
     score=0
     if (resultat==True and symbolJoueur=="x"):
-        score=1
+        score=10
     elif (resultat==True and symbolJoueur=="o"):
-        score=-1
+        score=-10
     return score
 
-def MaxValue(plateau,symbolJoueur):
+def MaxValue(plateau):
     """retourne le max des options que l'adversaire nous laisse jouer (parmis tous les min restant)"""
     value=-2000
     if (Terminal_Test(plateau)!=False):
         print("fin")
-        return Utility(plateau,symbolJoueur)
+        return Utility(plateau,'o')
     else:
         for a in Action(plateau):
             Result(plateau, a,None)
-            value=max(value,MinValue(Result(plateau,a,'o'),'x'))
-            Result(plateau, a,None)
+            value=max(value,MinValue(Result(plateau,a,'x')))
+            Result(plateau,a,None)
     return value
 
-def MinValue(plateau,symbolJoueur):
+def MinValue(plateau):
     """retourne le min des options parmis tous les max restant"""
     value=2000
     if (Terminal_Test(plateau)!=False):
-        return Utility(plateau,symbolJoueur)
+        return Utility(plateau,'x')
     else:
         for a in Action(plateau):
             Result(plateau, a,None)
-            value=min(value,MaxValue(Result(plateau,a,'x'),'o'))
+            value=min(value,MaxValue(Result(plateau,a,'o')))
             Result(plateau,a,None)
             print(plateau)
     return value
@@ -125,7 +125,7 @@ def MinValue(plateau,symbolJoueur):
 
     
 # pb avec cette fonction car au lieu d'actualiser seulement le statetemp elle actualise aussi le state
-def Decision(plateau,symbolJoueur):
+def Decision(plateau):
     """retourne la décision de l'action que l'on va jouer sous forme de coordonnées de l'emplacement à jouer"""
     #plateau doit rester le même, on ne modifiera que copiePlateau qui servira pour les simulations
     
@@ -134,23 +134,24 @@ def Decision(plateau,symbolJoueur):
     
     listePlaces=Action(plateau)
     maxAct=listePlaces[0]
-    valeurMax=MaxValue(plateau,symbolJoueur)
-    
+    valeurMax=MinValue(Result(plateau,Action(plateau)[0],'x'))
+    Result(plateau,maxAct,None)
     for place in Action(plateau):
         print("action: ",place)
-        if MaxValue(Result(plateau,place,'x'),symbolJoueur)>valeurMax:
+        if MinValue(Result(plateau,place,'x'))>valeurMax:
+            valeurMax=MinValue(Result(plateau,place,'x'))
             maxAct=place
         Result(plateau, place,None)
     return maxAct
 #%% Elagage alpha beta
-def MaxValue_ab(plateau,alpha,beta,symbolJoueur):
-    value=-200000
+def MaxValue_ab(plateau,alpha,beta):
+    value=-2000
     if (Terminal_Test(plateau)!=False):
         print("fin")
-        return Utility(plateau,symbolJoueur)
+        return Utility(plateau,'o')
     for a in Action(plateau):
         Result(plateau, a,None)
-        value=max(value,MinValue_ab(Result(plateau,a,'o'),alpha,beta,'x'))
+        value=max(value,MinValue_ab(Result(plateau,a,'x'),alpha,beta))
         print(plateau)
         Result(plateau, a,None)
         if value>=beta:
@@ -158,14 +159,14 @@ def MaxValue_ab(plateau,alpha,beta,symbolJoueur):
         alpha=max(alpha,value)
     return value
 
-def MinValue_ab(plateau,alpha,beta,symbolJoueur):
-    value=200000
+def MinValue_ab(plateau,alpha,beta):
+    value=2000
     if (Terminal_Test(plateau)!=False):
         print("fin")
-        return Utility(plateau,symbolJoueur)
+        return Utility(plateau,'x')
     for a in Action(plateau):
         Result(plateau, a,None)
-        value=min(value,MaxValue_ab(Result(plateau,a,'x'),alpha,beta,'o'))
+        value=min(value,MaxValue_ab(Result(plateau,a,'o'),alpha,beta))
         print(plateau)
         Result(plateau, a,None)
         if value<=alpha:
@@ -174,15 +175,18 @@ def MinValue_ab(plateau,alpha,beta,symbolJoueur):
     return value            
 
 
-def abSearch(plateau,symbolJoueur):
-    value=MaxValue_ab(plateau,-200000, 200000, symbolJoueur)
+def abSearch(plateau):
+    value=MaxValue_ab(plateau,-2000, 2000)
     res=Action(plateau)[0]
     print(value)
     for a in Action(plateau):
-        print(Utility(Result(plateau, a, symbolJoueur),symbolJoueur))
-        if value<MinValue(Result(plateau,a,symbolJoueur),'x'):            
+        print("action: ",a)
+        print(Utility(Result(plateau, a, 'x'),'x'))
+        if value==MinValue_ab(Result(plateau,a,'x'),-2000, 2000):
+        # if value==MaxValue(Result(plateau, a, 'x')):            
             res=a
-        print(Result(plateau, a, symbolJoueur))
+        #     value=MinValue(Result(plateau,a,'o'))
+        print(Result(plateau, a, 'x'))
         Result(plateau, a, None)  
     return res
     
@@ -272,12 +276,10 @@ def abSearch(plateau,symbolJoueur):
 # %% TESTS
 
 plateau=Plateau()
-plateau.tab=np.array([[None,'x','x','o'],
-                     ['o','x',None,'o'],
-                     [None,None,'o','x'],
-                     ['o',None,'x','o']])
-
-
+plateau.tab=np.array([[None,None,None,'x'],
+                     [None,None,None,None],
+                     [None,None,'o',None],
+                     ['o',None,None,'x']])
 # plateau.tab=np.array([['x','o',None,None,'x',None,'x','o','x',None,'x','o'],
 #                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
 #                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
@@ -312,5 +314,6 @@ print(Terminal_Test(plateau))
 # print(Result(plateau,Decision(plateau,'x'),'x'))
 
 #Les deux méthodes de recherche
-# print(Decision(plateau, 'x'))
-print(abSearch(plateau, 'x'))
+# print(Decision(plateau))
+
+print(abSearch(plateau))
