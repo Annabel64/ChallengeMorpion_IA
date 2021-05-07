@@ -147,7 +147,7 @@ def Decision(plateau):
 #%% Elagage alpha beta
 def MaxValue_ab(plateau,alpha,beta,profondeur):
     value=-2000
-    if (Terminal_Test(plateau)!=False or profondeur>10):
+    if (Terminal_Test(plateau)!=False or profondeur>5):
         print("fin")
         return Utility(plateau,'o')
     for a in Action(plateau):
@@ -163,7 +163,7 @@ def MaxValue_ab(plateau,alpha,beta,profondeur):
 
 def MinValue_ab(plateau,alpha,beta,profondeur):
     value=2000
-    if (Terminal_Test(plateau)!=False or profondeur>10):
+    if (Terminal_Test(plateau)!=False or profondeur>5):
         print("fin")
         return Utility(plateau,'x')
     for a in Action(plateau):
@@ -322,4 +322,4 @@ print(Terminal_Test(plateau))
 #Les deux méthodes de recherche
 # print(Decision(plateau))
 
-print(abSearch(plateau,10))
+print(abSearch(plateau,0))
