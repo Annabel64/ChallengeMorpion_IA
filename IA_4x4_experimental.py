@@ -7,11 +7,12 @@ Created on Wed May  5 20:15:47 2021
 
 import numpy as np
 import time
+import random as rd
 # On définit le plateau
 class Plateau:    
-    def __init__(self,tab=np.array([[None for x in range(4)] for x in range(4)])):
-        if (tab.shape!=(12,12)):
-            self.tab=np.array([[None for x in range(4)] for x in range(4)])
+    def __init__(self,tab=None):
+        if (tab==None or tab.shape!=(12,12)):
+            self.tab=np.array([[None for x in range(12)] for x in range(12)])
         else:
             self.tab=tab    
     def __str__(self):
@@ -144,37 +145,39 @@ def Decision(plateau):
             maxAct=place
         Result(plateau, place,None)
     return maxAct
+
+
 #%% Elagage alpha beta
 def MaxValue_ab(plateau,alpha,beta,profondeur):
     value=-2000
-    if (Terminal_Test(plateau)!=False or profondeur>10):
-        print("fin")
+    if (Terminal_Test(plateau)!=False or profondeur>5):
+        # print("fin")
         return Utility(plateau,'o')
     for a in Action(plateau):
         Result(plateau, a,None)
+        profondeur+=1
         value=max(value,MinValue_ab(Result(plateau,a,'x'),alpha,beta,profondeur))
-        print(plateau)
+        # print(plateau)
         Result(plateau, a,None)
         if value>=beta:
             return value
         alpha=max(alpha,value)
-        profondeur+=1
     return value
 
 def MinValue_ab(plateau,alpha,beta,profondeur):
     value=2000
-    if (Terminal_Test(plateau)!=False or profondeur>10):
-        print("fin")
+    if (Terminal_Test(plateau)!=False or profondeur>5):
+        # print("fin")
         return Utility(plateau,'x')
     for a in Action(plateau):
         Result(plateau, a,None)
+        profondeur+=1
         value=min(value,MaxValue_ab(Result(plateau,a,'o'),alpha,beta,profondeur))
-        print(plateau)
+        # print(plateau)
         Result(plateau, a,None)
         if value<=alpha:
             return value
         beta=min(beta,value)
-        profondeur+=1
     return value            
 
 
@@ -182,18 +185,18 @@ def abSearch(plateau,profondeur):
     t1=time.time()
     value=MaxValue_ab(plateau,-2000, 2000,profondeur)
     res=Action(plateau)[0]
-    print(value)
+    print("value max que l'on peut obtenir avec cette limite de profondeur': ",value)
     for a in Action(plateau):
-        print("action: ",a)
-        print(Utility(Result(plateau, a, 'x'),'x'))
+        # print("action: ",a)
+        # print(Utility(Result(plateau, a, 'x'),'x'))
         if value==MinValue_ab(Result(plateau,a,'x'),-2000, 2000,profondeur):
               
             res=a
         #     value=MinValue(Result(plateau,a,'o'))
-        print(Result(plateau, a, 'x'))
+        # print(Result(plateau, a, 'x'))
         Result(plateau, a, None)  
         t2=time.time()
-        print("Le temps d'éxécution est de :",t2-t1,"s")
+        # print("Le temps d'éxécution est de :",t2-t1,"s")
     return res
     
 # def Choix(plateau,symbolJoueur):
@@ -279,21 +282,84 @@ def abSearch(plateau,profondeur):
 #         return extr
 
 
+#%% BOUCLE FINALE
+
+
+def BoucleFinale():
+    plateau=Plateau()    
+    # plateau.tab=np.array([['x','o',None,'x','x',None,'x','o','x',None,'x','o'],
+    #                   ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+    #                   ['o',None,'o',None,None,None,'o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+    #                   ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+    #                   ['o',None,'o',None,'o','x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+    #                   ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+    #                   ['o',None,'o',None,None,'x','o',None,'o','x','o',None]])
+    tour=1
+    i=-1
+    j=-1
+    while not Terminal_Test(plateau):        
+        print("Tour numéro ",tour,' :\n')
+        print(plateau)
+        
+        if(tour%2==0):
+            symbolJoueur='x'
+            if (tour <10):
+                print("i: ",i," j: ",j)
+                i=rd.randint(max(0,i-4),min(11,i+4))
+                j=rd.randint(max(0,j-4),min(11,j+4))
+                while (plateau.tab[i][j]!=None):
+                    i=rd.randint(max(0,i-4),min(11,i+4))
+                    j=rd.randint(max(0,j-4),min(11,j+4))
+                coup=[i,j]
+            else:
+                #on détermine le meilleur coup à jouer grâce à MinMax
+                coup=abSearch(plateau,0)   
+            print("coup",coup)
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        else:
+            symbolJoueur='o'
+            
+            #on demande à l'utilisateur où veut-il placer son pion
+            i=int(input("Veuillez saisir i"))
+            j=int(input("Veuillez saisir j"))
+            coup=[i,j] #juste pour le test
+            
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        tour+=1
+    print(plateau)
+    if(Terminal_Test(plateau)==None):
+        print("Match nul")
+    else :
+        #méthode afin de déterminer le gagnant : est-ce qu'on modifie Terminal_Test ? Nouvelle méthode ?
+        if(tour%2==0): # alors le prochain a joué est 'x' donc celui qui vient de jouer est 'o'
+            print('Le joueur avec les pions "o" a gagné')
+        else:
+            print('Le joueur avec les pions "x" a gagné')
+    
+
 # %% TESTS
 
-plateau=Plateau()
-plateau.tab=np.array([[None,None,None,'x'],
-                     [None,None,None,None],
-                     [None,None,'o',None],
-                     ['o',None,None,'x']])
-# plateau.tab=np.array([['x','o',None,None,'x',None,'x','o','x',None,'x','o'],
+# plateau=Plateau()
+# plateau.tab=np.array([[None,None,None,None],
+#                      [None,None,None,None],
+#                      [None,None,None,None],
+#                      [None,None,None,None]])
+
+# plateau.tab=np.array([['x','o',None,'x','x',None,'x','o','x',None,'x','o'],
 #                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
 #                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
 #                       ['o',None,'o',None,None,None,'o',None,'o','x','o',None],
 #                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
 #                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
 #                       ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
-#                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
+#                       ['o',None,'o',None,'o','x','o',None,'o','x','o',None],
 #                       ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
 #                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
 #                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
@@ -301,9 +367,9 @@ plateau.tab=np.array([[None,None,None,'x'],
 
 
 #Affichache du tableau : MARCHE
-print(plateau) 
+# print(plateau) 
 #Terminal_Test : MARCHE
-print(Terminal_Test(plateau)) 
+# print(Terminal_Test(plateau)) 
 
 #Méthode Action : MARCHE
 # print(Action(plateau))
@@ -322,4 +388,6 @@ print(Terminal_Test(plateau))
 #Les deux méthodes de recherche
 # print(Decision(plateau))
 
-print(abSearch(plateau,10))
+# print(abSearch(plateau,10))
+
+BoucleFinale()

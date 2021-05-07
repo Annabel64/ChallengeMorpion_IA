@@ -134,13 +134,17 @@ def Decision(plateau):
     
     listePlaces=Action(plateau)
     maxAct=listePlaces[0]
+    # valeurMax est la valeur max que le joueur peut obtenir en jouant son meilleur coup
     valeurMax=MinValue(Result(plateau,Action(plateau)[0],'x'))
+    print("valeurMax: ",valeurMax)
     Result(plateau,maxAct,None)
+    # on parcours toutes les actions pour retrouver celle qui correspond à ce meilleur coup
     for place in Action(plateau):
         print("action: ",place)
         if MinValue(Result(plateau,place,'x'))>valeurMax:
             valeurMax=MinValue(Result(plateau,place,'x'))
             maxAct=place
+            print("valeurMax: ",valeurMax)
         Result(plateau, place,None)
     return maxAct
 #%% Elagage alpha beta
@@ -154,9 +158,12 @@ def MaxValue_ab(plateau,alpha,beta):
         value=max(value,MinValue_ab(Result(plateau,a,'x'),alpha,beta))
         print(plateau)
         Result(plateau, a,None)
+        print("value: ",value)
+        print("beta: ",beta)
         if value>=beta:
             return value
         alpha=max(alpha,value)
+        print("alpha: ",alpha)
     return value
 
 def MinValue_ab(plateau,alpha,beta):
@@ -169,8 +176,11 @@ def MinValue_ab(plateau,alpha,beta):
         value=min(value,MaxValue_ab(Result(plateau,a,'o'),alpha,beta))
         print(plateau)
         Result(plateau, a,None)
+        print("value2: ",value)
+        print("alpha2: ",alpha)
         if value<=alpha:
             return value
+        print("beta2: ",beta)
         beta=min(beta,value)
     return value            
 
@@ -190,96 +200,78 @@ def abSearch(plateau):
         Result(plateau, a, None)  
     return res
     
-# def Choix(plateau,symbolJoueur):
-#     """retourne le meilleur coup"""
-#     #--> le meilleur coup est celui qui retourne Utility(joueur)=1 ou qui empeche Utility(adversaire)=1
-#     #on privilégie l'attaque si elle permet de gagner
-#     #si on ne peut pas gagner, on privilégie la défence si elle permet de ne pas perdre
-#     #si on ne peut pas perdre ni gagner, on attaque
-    
-#     #on copie le plateau pour éviter de le modifier accidentellement
-#     copiePlateau=Plateau()
-#     copiePlateau.tab=np.array(plateau.tab)
-    
-#     symbolAdversaire=''
-#     if symbolJoueur=='x':symbolAdversaire='o'
-#     else: symbolAdversaire='x'
-    
-#     listePlaces=Action(plateau) #liste des places libres à jouer
-#     meilleurCoup=listePlaces[0]
-        
-       
-#     # 1) on recherche le meilleur coup ie. si une place peut nous faire gagner
-#     for place in listePlaces:
-#         #si le utility de la place vaut 1, meilleurcoup=place
-#         if(Utility(Joue(copiePlateau,place,symbolJoueur),symbolJoueur)==1):
-#             meilleurCoup=place
-#             break;
-#             #on arrête le programme, le coup qui permet de gagner a été trouvé
-#         copiePlateau.tab=np.array(plateau.tab)
+#%% Elagage alpha beta + euristique
 
-    
-#     # 2) si le meilleur coup ne peut pas nous faire gagner, on regarde si un coup de l'ennemi peut nous faire perdre
-#     if Utility(Joue(copiePlateau,meilleurCoup,symbolJoueur),symbolJoueur)==0:
-#         for place in listePlaces:
-#         #si le utility de la place vaut 1, ie. l'adversaire peut gagner, on doit jouer à cette place: meilleurcoup=place
-#             if(Utility(Joue(copiePlateau,place,symbolAdversaire),symbolAdversaire)==1):
-#                 meilleurCoup=place
-#                 break;
-#                 # on arrête le programme, le coup qui permet de ne pas perdre a été trouvé
-#             copiePlateau.tab=np.array(plateau.tab)
+def MaxValue_ab_A(plateau,alpha,beta,profondeur):
+    value=-2000
+    if profondeur <15:
         
+        if (Terminal_Test(plateau)!=False):
+            print("fin")
+            return Utility(plateau,'o')
+        for a in Action(plateau):
+            Result(plateau, a,None)
+            profondeur=profondeur+1
+            print(profondeur)
+            value=max(value,MinValue_ab_A(Result(plateau,a,'x'),alpha,beta,profondeur))
+            print(plateau)
+            Result(plateau, a,None)
+            print("value: ",value)
+            print("beta: ",beta)
+            if value>=beta:
+                return value
+            alpha=max(alpha,value)
+            print("alpha: ",alpha)
+    print("valeur finale: ",value)
+    return value
+
+def MinValue_ab_A(plateau,alpha,beta,profondeur):
+    value=2000
+    if profondeur <15:
         
-#     # 3) si aucun coup ne peut ni nous faire gagner ni empêcher qu'on perde, on va placer un pion là où la densité de nos pions est maximale
-#     if Utility(Joue(copiePlateau,meilleurCoup,symbolAdversaire),symbolAdversaire)==0:
-#             meilleurCoup=1
+        if (Terminal_Test(plateau)!=False):
+            print("fin")
+            return Utility(plateau,'x')
+        for a in Action(plateau):
+            Result(plateau, a,None)
+            profondeur=profondeur+1
+            print(profondeur)
+            value=min(value,MaxValue_ab_A(Result(plateau,a,'o'),alpha,beta,profondeur))
+            print(plateau)
+            Result(plateau, a,None)
+            print("value2: ",value)
+            print("alpha2: ",alpha)
+            if value<=alpha:
+                return value
+            print("beta2: ",beta)
+            beta=min(beta,value)
+    print("valeur finale: ",value)
+    return value            
 
 
-#     return meilleurCoup
-        
-        
-# def MinMax(plateau,symbolJoueur):
-#     """retourne l'utility du meilleur coup"""
-    
-#     #A FAIRE : je veux retourner une liste des meilleurs coups à faire
-#     #méthode récursive
-    
-#     if Terminal_Test(plateau):
-#         return Utility(plateau,symbolJoueur)
-    
-#     elif symbolJoueur=='x':
-#         extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
-#         # print(extr)
-#         Result(plateau,Action(plateau)[0],None)
-#         for i in Action(plateau):
-#             # print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
-            
-#             if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)>extr:
-#                 Result(plateau,i,None)
-#                 extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
-                
-#             Result(plateau,i,None)
-#         return extr
-#     else :
-#         extr = MinMax(Result(plateau,Action(plateau)[0],symbolJoueur),symbolJoueur)
-#         Result(plateau,i,None)
-#         for i in Action(plateau):
-#             # print(MinMax(Result(plateau,i,symbolJoueur),symbolJoueur),extr,"\n")
-#             if MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)<extr:
-#                 Result(plateau,i,None)
-#                 extr = MinMax(Result(plateau,i,symbolJoueur),symbolJoueur)
-                
-#             Result(plateau,i,None)
-#         return extr
+def abSearch_A(plateau):
+    value=MaxValue_ab_A(plateau,-2000, 2000,0)
+    res=Action(plateau)[0]
+    print(value)
+    for a in Action(plateau):
+        print("action: ",a)
+        print(Utility(Result(plateau, a, 'x'),'x'))
+        if value==MinValue_ab_A(Result(plateau,a,'x'),-2000, 2000,0):
+        # if value==MaxValue(Result(plateau, a, 'x')):            
+            res=a
+        #     value=MinValue(Result(plateau,a,'o'))
+        print(Result(plateau, a, 'x'))
+        Result(plateau, a, None)  
+    return res
 
 
 # %% TESTS
 
 plateau=Plateau()
-plateau.tab=np.array([[None,None,None,'x'],
-                     [None,None,None,None],
+plateau.tab=np.array([['x','x','o','x'],
                      [None,None,'o',None],
-                     ['o',None,None,'x']])
+                     [None,None,'o',None],
+                     [None,None,None,None]])
 # plateau.tab=np.array([['x','o',None,None,'x',None,'x','o','x',None,'x','o'],
 #                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
 #                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
@@ -316,4 +308,4 @@ print(Terminal_Test(plateau))
 #Les deux méthodes de recherche
 # print(Decision(plateau))
 
-print(abSearch(plateau))
+print(abSearch_A(plateau))
