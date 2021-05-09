@@ -50,7 +50,7 @@ def Terminal_Test(plateau):
     # i,j sont les coord du pion qui vient juste d'être posé
     # on vérifie que le plateau n'est pas entièrement rempli
     plateauRempli=False
-    caseVide=[x[i] for x in plateau.tab for i in range(4) if x[i]==None]
+    caseVide=[x[i] for x in plateau.tab for i in range(12) if x[i]==None]
     if len(caseVide)==0:
         plateauRempli=True  
 
@@ -257,20 +257,24 @@ def MinValue_ab_A(plateau,alpha,beta,profondeur):
 
 
 def abSearch_A(plateau):
-    value=MaxValue_ab_A(plateau,-2000, 2000,0)
     res=Action(plateau)[0]
-    print(value)
     for a in heuristique(plateau):
     #for a in Action(plateau):
-        print("action: ",a)
-        print(Utility(Result(plateau, a, 'x'),'x'))
-        if value==MinValue_ab_A(Result(plateau,a,'x'),-2000, 2000,0):
-        # if value==MaxValue(Result(plateau, a, 'x')):            
-            res=a
-        #     value=MinValue(Result(plateau,a,'o'))
-        print(Result(plateau, a, 'x'))
-        Result(plateau, a, None)  
-    return res
+        if ( len(heuristique(plateau)) == 1 ):
+            res = heuristique(plateau)[0]
+            return res
+        else : 
+            value=MaxValue_ab_A(plateau,-2000, 2000,0)
+            print(value)
+            print("action: ",a)
+            print(Utility(Result(plateau, a, 'x'),'x'))
+            if value==MinValue_ab_A(Result(plateau,a,'x'),-2000, 2000,0):
+            # if value==MaxValue(Result(plateau, a, 'x')):            
+                res=a
+            #     value=MinValue(Result(plateau,a,'o'))
+            print(Result(plateau, a, 'x'))
+            Result(plateau, a, None)  
+        return res
 
 #retourne une liste d'action contenant les "meilleurs actions" en premier et les "mauvaises actions" en dernier
 def heuristique(plateau):
@@ -288,7 +292,7 @@ def heuristique(plateau):
     
 # Si la partie se termine en ajoutant une croix, on met l'action en tête de liste et on retourne la listes des actions
     
-#%%  On regarde les colonnes
+#%%  On regarde les colonnes ( pour les croix )
     
 
         # Extrémités supérieur
@@ -362,7 +366,7 @@ def heuristique(plateau):
                 return listeAction
             
 
-#%%  On regarde les lignes
+#%%  On regarde les lignes ( pour les croix )
 
 
         # Extrémités gauche
@@ -435,109 +439,1039 @@ def heuristique(plateau):
                 del listeAction[1:]
                 return listeAction
             
-#%%  On regarde les diagonales à pentes négatives
+#%%  On regarde les diagonales à pentes négatives ( pour les croix )
 
 
         # Extrémités gauche
-        
 
-        if (aj == 0) :
-            if ( ai >= 0 and ai < plateau.tab.shape[0]-3):
-                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x' ):
+        if (aj == 0) : 
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] =='x' ):
                     listeAction.remove(a)
                     listeAction.insert(0,a)
                     del listeAction[1:]
                     return listeAction
             
-            
+        # à une case du bord gauche
+    
 
+        elif (aj == 1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            
+        # à deux cases du bord gauche
+    
+
+        elif (aj == 2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai-1][aj-1] == plateau.tab[ai-2][aj-2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+   
+            
+   
+    # Extrémités droite
+        
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
+    
+    # à une case du bord droite
+    
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
+    
+    # à deux cases du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
                 
-
-             
             
-                  
-            
-            
-    #     # à une case du bord gauche
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-    #     elif (aj == 1) :
-    #         if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x'):
-    #             listeAction.remove(a)
-    #             listeAction.insert(0,a)
-    #             del listeAction[1:]
-    #             return listeAction
+        else :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] =='x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+
+#%%  On regarde les diagonales à pentes positives ( pour les croix )
+
+
+        # Extrémités gauche
+
+        if (aj == 0) : 
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
             
-    #     # à deux cases du bord gauche
+        # à une case du bord gauche
     
 
-    #     elif (aj == 2) :
-    #         if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
-    #             listeAction.remove(a)
-    #             listeAction.insert(0,a)
-    #             del listeAction[1:]
-    #             return listeAction
+        elif (aj == 1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+            
+        # à deux cases du bord gauche
+    
+
+        elif (aj == 2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+   
+            
+   
+        # Extrémités droite
+        
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
+    
+        # à une case du bord droit
+    
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
+    
+    # à deux cases du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+            
+    # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX              
+
+    # Si la partie se termine en jouant un rond sur une case, on met la case en tête de liste et on retourne la listes des actions
+    
+#%%  On regarde les colonnes ( pour les ronds )
+    
+
+        # Extrémités supérieur
+        
+        if (ai == 0) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' ):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+        # Extrémités inférieur
+        
+        elif (ai == plateau.tab.shape[0]-1) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' ):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+    
+
+    
+    # à une case du bord supérieur
+    
+
+        elif (ai == 1) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+    
+    # à une case du bord inférieur
+    
+
+        elif (ai == plateau.tab.shape[0]-2) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    # à deux cases du bord supérieur
+    
+
+        elif (ai == 2) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+    
+    # à deux cases du bord inférieur
+    
+
+        elif (ai == plateau.tab.shape[0]-3) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    # à trois cases ou plus des bords (inférieur et supérieur)
+    
+
+        else :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+
+#%%  On regarde les lignes ( pour les ronds )
+
+
+        # Extrémités gauche
+        
+        if (aj == 0) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' ):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+        # Extrémités droite
+        
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' ):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+    
+
+    
+    # à une case du bord gauche
+    
+
+        elif (aj == 1) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+    
+    # à une case du bord droite
+    
+
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    # à deux cases du bord gauche
+    
+
+        elif (aj == 2) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+    
+    # à deux cases du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+#%%  On regarde les diagonales à pentes négatives ( pour les ronds )
+
+
+        # Extrémités gauche
+
+        if (aj == 0) : 
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            
+        # à une case du bord gauche
+    
+
+        elif (aj == 1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            
+        # à deux cases du bord gauche
+    
+
+        elif (aj == 2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai-1][aj-1] == plateau.tab[ai-2][aj-2] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
    
             
    
     #     # Extrémités droite
         
-    #     elif (aj == plateau.tab.shape[1]-1) :
-    #         if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' ):
-    #             listeAction.remove(a)
-    #             listeAction.insert(0,a)
-    #             del listeAction[1:]
-    #             return listeAction
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
     
     
     # # à une case du bord droite
     
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
+    
+    # à deux cases du bord droit
+    
 
-    #     elif (aj == plateau.tab.shape[1]-2) :
-    #         if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'x'):
-    #             listeAction.remove(a)
-    #             listeAction.insert(0,a)
-    #             del listeAction[1:]
-    #             return listeAction
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
             
-    
-    # # à deux cases du bord droit
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-    #     elif (aj == plateau.tab.shape[1]-3) :
-    #         if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
-    #             listeAction.remove(a)
-    #             listeAction.insert(0,a)
-    #             del listeAction[1:]
-    #             return listeAction
+        else :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+
+#%%  On regarde les diagonales à pentes positives ( pour les ronds )
+
+
+        # Extrémités gauche
+
+        if (aj == 0) : 
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
             
-    # # à trois cases ou plus des bords (gauche et droit)
+        # à une case du bord gauche
     
 
-    #     else :
-    #         if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x'):
-    #             listeAction.remove(a)
-    #             listeAction.insert(0,a)
-    #             del listeAction[1:]
-    #             return listeAction    
-
-    # Si la partie se termine en jouant un rond sur une case, on met la case en tête de liste et on retourne la listes des actions
+        elif (aj == 1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+            
+        # à deux cases du bord gauche
     
-    ###### A faire dans un second temps
+
+        elif (aj == 2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+   
+            
+   
+        # Extrémités droite
+        
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
+    
+        # à une case du bord droit
+    
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
+    
+    # à deux cases du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+            
+    # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+    
     
     #On priorise ensuite les actions où l'on gagne en deux tours
     
-    # S'il y a une croix en haut et en bas de l'action et "None" deux cases en haut et deux case en bas : on met l'action en tête de liste et on retourne la listes des actions
-    # S'il y a une croix en haut et en bas de l'action et "None" deux cases en haut et deux case en bas : on met l'action en tête de liste et on retourne la listes des actions
-    # S'il y a une croix en haut et en bas de l'action et "None" deux cases en haut et deux case en bas : on met l'action en tête de liste et on retourne la listes des actions
+    
+#%%  On regarde les colonnes ( victoire en deux tours )
     
     
+
     
+    # à une case du bord supérieur
     
-    #Puis priorise les actions pour bloquer une défaite en deux tours
+
+        if (ai == 1) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
     
-    #######
+            
+    # à deux cases du bord supérieur
     
+
+        elif (ai == 2) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+            
+    # à une case du bord inférieur
+    
+
+        elif (ai == plateau.tab.shape[0]-2) :
+            if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    
+    # à deux cases du bord inférieur
+    
+
+        elif (ai == plateau.tab.shape[0]-3) :
+            if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    # à trois cases ou plus des bords (inférieur et supérieur)
+    
+
+        else :
+            if ( ai != 0 and ai != plateau.tab.shape[0]-1 ):    
+                if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            
+
+#%%  On regarde les lignes ( victoire en deux tours )
+
+    
+    # à une case du bord gauche
+    
+
+        if (aj == 1) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+    
+            
+    # à deux cases du bord gauche
+    
+
+        elif (aj == 2) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+            
+    # à une case du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    
+    # à deux cases du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
+                listeAction.remove(a)
+                listeAction.insert(0,a)
+                del listeAction[1:]
+                return listeAction
+            
+    # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( aj != 0 and aj != plateau.tab.shape[1]-1 ):         
+                if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+
+#%% On regarde les diagonales à pentes négatives ( victoire en deux tours )
+
+
+    # à une case du bord gauche
+        
+    
+        if (aj == 1) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+    # à deux cases du bord gauche
+    
+
+        if (aj == 2) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+                
+    # à une case du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+        # à deux cases du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+        # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
+                if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                    if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                        listeAction.remove(a)
+                        listeAction.insert(0,a)
+                        del listeAction[1:]
+                        return listeAction
+            if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
+                if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                    if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                        listeAction.remove(a)
+                        listeAction.insert(0,a)
+                        del listeAction[1:]
+                        return listeAction
+            if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
+                if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                    if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                        listeAction.remove(a)
+                        listeAction.insert(0,a)
+                        del listeAction[1:]
+                        return listeAction
+                    
+#%% On regarde les diagonales à pentes positives ( victoire en deux tours )
+
+
+    # à une case du bord gauche
+        
+    
+        if (aj == 1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+    # à deux cases du bord gauche
+    
+
+        if (aj == 2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+                
+    # à une case du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+    # à deux cases du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeAction.remove(a)
+                    listeAction.insert(0,a)
+                    del listeAction[1:]
+                    return listeAction
+                
+    # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
+                if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                    if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                        listeAction.remove(a)
+                        listeAction.insert(0,a)
+                        del listeAction[1:]
+                        return listeAction
+            if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
+                if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                    if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                        listeAction.remove(a)
+                        listeAction.insert(0,a)
+                        del listeAction[1:]
+                        return listeAction
+            if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
+                if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                    if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                        listeAction.remove(a)
+                        listeAction.insert(0,a)
+                        del listeAction[1:]
+                        return listeAction
+                
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX              
+
+      
     # S'il n'y as pas d'action "évidente", on triera la liste des actions en fonction des notes (qu'on zippera a la liste d'action pour les trier a la fin par note) :
         
     # Si l'action est sur un bord : -0.5(Donc si elle est dans un coin -1)
@@ -546,16 +1480,6 @@ def heuristique(plateau):
     # Si l'action est à au moins 3 cases du bord : 0.5
     
     # La note variera surtout en fonction des cases adjacentes à l'action
-    
-    
-    
-    
-    
-    
-    # S'il y a une croix en haut et en bas de l'action et "None" deux cases en haut ou deux case en bas : 1
-    
-    # Dernière étape, si un éléments de fait pas partie des meilleurs éléments, on regardera en premier ceux qui ne sont pas sans les coins
-    
      
      
 
@@ -594,31 +1518,17 @@ plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,No
                       [None,None,None,None,None,None,None,None,None,None,None,None]])
 
 plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,None],
-                      [None,None,None,None,None,None,None,None,None,None,None,None],
-                      [None,None,'x',None,None,None,None,None,None,None,None,None],
-                      [None,'x',None,'x',None,None,None,None,None,None,None,None],
-                      [None,None,'x',None,None,None,None,None,None,None,None,None],
                       [None,None,None,'x',None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,'x',None,None,None,None,None],
                       [None,'x',None,None,None,None,None,None,None,None,None,None],
-                      [None,None,'x',None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,'x',None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,'x',None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None]])
-
-# plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,None],
-#                       [None,'x',None,None,None,None,None,None,None,None,None,None],
-#                       [None,None,'x',None,None,None,None,None,None,None,None,None],
-#                       [None,'x',None,'x',None,None,None,None,None,None,None,None],
-#                       [None,None,'x',None,None,None,None,None,None,None,None,None],
-#                       [None,None,None,'x',None,None,None,None,None,None,None,None],
-#                       [None,None,None,None,None,None,None,None,None,None,None,None],
-#                       [None,None,None,None,None,None,None,None,None,None,None,None],
-#                       [None,None,None,None,None,None,None,None,None,None,None,None],
-#                       [None,'x',None,None,None,None,None,None,None,None,None,None],
-#                       [None,None,'x',None,None,None,None,None,None,None,None,None],
-#                       [None,None,None,None,None,None,None,None,None,None,None,None]])
-
 
 
 
@@ -626,7 +1536,7 @@ plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,No
 #Affichache du tableau : MARCHE
 print(plateau) 
 #Terminal_Test : MARCHE
-print(Terminal_Test(plateau)) 
+#print(Terminal_Test(plateau)) 
 
 #Méthode Action : MARCHE
 # print(Action(plateau))
@@ -648,6 +1558,7 @@ temps1 = time.time()
 print(abSearch_A(plateau))
 temps2 = time.time()
 print("Temps d'execution :",temps2-temps1)
+#print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n",heuristique(plateau))
 
 # a = [1,5]
 # b = [4,7]
@@ -674,7 +1585,8 @@ print("Temps d'execution :",temps2-temps1)
 #     return 5
         
 #print(toto(12)) 
-#print(plateau.tab.shape[0]-3)
+#print(plateau.tab.shape[0])
 ai = 1
 aj = 0
-print(plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x')
+# print(plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x')
+# print(len([[2,0]]))
