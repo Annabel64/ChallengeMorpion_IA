@@ -1537,6 +1537,68 @@ def heuristique(plateau):
     del listeAction[5:]
     return listeAction
 
+#%% BOUCLE FINALE
+
+
+def BoucleFinale():
+    plateau=Plateau()    
+    # plateau.tab=np.array([['x','o',None,'x','x',None,'x','o','x',None,'x','o'],
+    #                   ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+    #                   ['o',None,'o',None,None,None,'o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+    #                   ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+    #                   ['o',None,'o',None,'o','x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+    #                   ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+    #                   ['o',None,'o',None,None,'x','o',None,'o','x','o',None]])
+    tour=1
+    i=-1
+    j=-1
+    while not Terminal_Test(plateau):        
+        print("Tour numéro ",tour,' :\n')
+        print(plateau)
+        
+        if(tour%2==0):
+            symbolJoueur='x'
+            if (tour <10):
+                print("i: ",i," j: ",j)
+                i=rd.randint(max(0,i-4),min(11,i+4))
+                j=rd.randint(max(0,j-4),min(11,j+4))
+                while (plateau.tab[i][j]!=None):
+                    i=rd.randint(max(0,i-4),min(11,i+4))
+                    j=rd.randint(max(0,j-4),min(11,j+4))
+                coup=[i,j]
+            else:
+                #on détermine le meilleur coup à jouer grâce à MinMax
+                coup=abSearch(plateau,0)   
+            print("coup",coup)
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        else:
+            symbolJoueur='o'
+            
+            #on demande à l'utilisateur où veut-il placer son pion
+            i=int(input("Veuillez saisir i"))
+            j=int(input("Veuillez saisir j"))
+            coup=[i,j] #juste pour le test
+            
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        tour+=1
+    print(plateau)
+    if(Terminal_Test(plateau)==None):
+        print("Match nul")
+    else :
+        #méthode afin de déterminer le gagnant : est-ce qu'on modifie Terminal_Test ? Nouvelle méthode ?
+        if(tour%2==0): # alors le prochain a joué est 'x' donc celui qui vient de jouer est 'o'
+            print('Le joueur avec les pions "o" a gagné')
+        else:
+            print('Le joueur avec les pions "x" a gagné')
+    
+
 # %% TESTS
 
 plateau=Plateau()

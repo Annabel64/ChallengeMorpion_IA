@@ -292,6 +292,9 @@ def heuristique(plateau):
     
 # Si la partie se termine en ajoutant une croix, on met l'action en tête de liste et on retourne la listes des actions
     
+# %%
+
+
 #%%  On regarde les colonnes ( pour les croix )
     
 
