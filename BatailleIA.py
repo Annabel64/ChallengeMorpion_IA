@@ -46,10 +46,6 @@ def Result(plateau,case,symbolJoueur):
     plateau.tab[x][y]=symbolJoueur    
     return plateau
 
-def distance(case,case): #case=[x,y]
-    """retourne la distance euclidienne qui sépare deux cases"""
-    
-
 
 def Terminal_Test(plateau):
     """renvoie True si il y a un gagnant, False si il n'y en a pas et None si match nul"""
@@ -1562,6 +1558,7 @@ def BoucleFinale():
     tour=1
     i=-1
     j=-1
+    symbolJoueur=''
     while not Terminal_Test(plateau):        
         print("Tour numéro ",tour,' :\n')
         print(plateau)
@@ -1597,11 +1594,8 @@ def BoucleFinale():
     if(Terminal_Test(plateau)==None):
         print("Match nul")
     else :
-        #méthode afin de déterminer le gagnant : est-ce qu'on modifie Terminal_Test ? Nouvelle méthode ?
-        if(tour%2==0): # alors le prochain a joué est 'x' donc celui qui vient de jouer est 'o'
-            print('Le joueur avec les pions "o" a gagné')
-        else:
-            print('Le joueur avec les pions "x" a gagné')
+        #méthode afin de déterminer le gagnant :
+        print('Le joueur avec les pions ',symbolJoueur,' a gagné')
     
 
 # %% TESTS
