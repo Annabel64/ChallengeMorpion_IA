@@ -7,7 +7,7 @@ Created on Sat May  1 13:39:45 2021
 
 import time
 import numpy as np
-from random import randint
+from random import randint as rd
 
 # On définit le plateau
 class Plateau:    
@@ -40,9 +40,9 @@ def Action(plateau):
                 l.append([i,j])
     return l
 
-def Result(plateau,a,symbolJoueur):
+def Result(plateau,case,symbolJoueur):
     """actualise le plateau du jeu en ajoutant le pion du joueur en a=[x,y]"""
-    x,y=a[0],a[1]    
+    x,y=case[0],case[1]    
     plateau.tab[x][y]=symbolJoueur    
     return plateau
 
@@ -150,6 +150,7 @@ def Decision(plateau):
             print("valeurMax: ",valeurMax)
         Result(plateau, place,None)
     return maxAct
+
 #%% Elagage alpha beta
 def MaxValue_ab(plateau,alpha,beta):
     value=-2000
@@ -263,8 +264,8 @@ def abSearch_A(plateau):
     #for a in Action(plateau):
         # Joue vers le milieu du plateau si on est les premiers à jouer
         if ( len(Action(plateau)) == 12*12 ):
-            r1 = randint(3,plateau.tab.shape[0]-4)
-            r2 = randint(3,plateau.tab.shape[0]-4)
+            r1 = rd(3,plateau.tab.shape[0]-4)
+            r2 = rd(3,plateau.tab.shape[0]-4)
             return [[r1,r2]]
         else : 
             res=heuristique(plateau)[0]
@@ -283,7 +284,7 @@ def abSearch_A(plateau):
 #retourne une liste d'action contenant les "meilleurs actions" en premier et les "mauvaises actions" en dernier
 def heuristique(plateau):
     """ Ne marche que sur les plateau de taille au moins 7x7"""
-    """On appelera, heuristique(plateau)"""
+    """ On appelera, heuristique(plateau)"""
     """ Elle permet de regarder en premier les actions ayant le plus de potentiel """
     compteur = -1
     listeAction = Action(plateau)
@@ -1557,6 +1558,7 @@ def BoucleFinale():
     tour=1
     i=-1
     j=-1
+    symbolJoueur=''
     while not Terminal_Test(plateau):        
         print("Tour numéro ",tour,' :\n')
         print(plateau)
@@ -1592,11 +1594,8 @@ def BoucleFinale():
     if(Terminal_Test(plateau)==None):
         print("Match nul")
     else :
-        #méthode afin de déterminer le gagnant : est-ce qu'on modifie Terminal_Test ? Nouvelle méthode ?
-        if(tour%2==0): # alors le prochain a joué est 'x' donc celui qui vient de jouer est 'o'
-            print('Le joueur avec les pions "o" a gagné')
-        else:
-            print('Le joueur avec les pions "x" a gagné')
+        #méthode afin de déterminer le gagnant :
+        print('Le joueur avec les pions ',symbolJoueur,' a gagné')
     
 
 # %% TESTS
