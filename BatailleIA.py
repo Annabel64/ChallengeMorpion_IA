@@ -7,6 +7,7 @@ Created on Sat May  1 13:39:45 2021
 
 import time
 import numpy as np
+import math
 from random import randint
 
 # On définit le plateau
@@ -1393,6 +1394,44 @@ def heuristique(plateau):
     del listeAction[5:]
     return listeAction
 
+# %% Boucle finale
+
+def Morpion():
+    plateau=Plateau()
+    tour=1
+    while not Terminal_Test(plateau):        
+        print("Tour numéro ",tour,' :\n')
+        
+        if(tour%2==0):
+            symbolJoueur='x'
+            
+            #on détermine le meilleur coup à jouer grâce à MinMax
+            coup=abSearch_A(plateau) #juste pour le test
+            
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        else:
+            symbolJoueur='o'
+            ai=int(input("Veuillez saisir i: "))+1
+            aj=int(input("Veuillez saisir j: "))+1
+            #on détermine le meilleur coup à jouer grâce à MinMax
+            coup=[ai,aj] #juste pour le test
+            
+            plateau=Result(plateau, coup, symbolJoueur)
+            
+        tour+=1
+    
+    if(Terminal_Test(plateau)==None):
+        print("Match nul")
+    else :
+        #méthode afin de déterminer le gagnant : est-ce qu'on modifie Terminal_Test ? Nouvelle méthode ?
+        if(tour%2==0): # alors le prochain a joué est 'x' donc celui qui vient de jouer est 'o'
+            print('Le joueur avec les pions "o" a gagné')
+        else:
+            print('Le joueur avec les pions "o" a gagné')
+    
+Morpion()
+
 # %% TESTS
 
 plateau=Plateau()
@@ -1487,7 +1526,7 @@ plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,No
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
-                      [None,None,None,None,'o','o',None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
@@ -1583,19 +1622,20 @@ aj = 0
 # l = [1,2,2,7]
 # l[0] += 1
 # print(l)
-a= heuristique(plateau)
-print(a)
+# a= heuristique(plateau)
+# print(a)
 
-def f(ai,aj,plateau):
-    compteur=0
-    for k in range (0,8):
-            if (ai-3+k>-1 and ai-3+k<8):
-                for l in range(0,8):
-                    print(((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5))
-                    if (aj-3+l>-1 and aj-3+l<8 and ((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)!=0):
-                        if (plateau.tab[ai-3+k][aj-3+l] != None):                            
-                            compteur+= 5/((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)
-    return compteur/10
+# def f(ai,aj,plateau):
+#     compteur=0
+#     for k in range (0,8):
+#             if (ai-3+k>-1 and ai-3+k<8):
+#                 for l in range(0,8):
+#                     print(((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5))
+#                     if (aj-3+l>-1 and aj-3+l<8 and ((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)!=0):
+#                         if (plateau.tab[ai-3+k][aj-3+l] != None):                            
+#                             compteur+= 5/((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)
+#     return compteur/10
 
-res=f(11,11,plateau)
-print(res)
+# res=f(11,11,plateau)
+# print(res)
+print(abSearch_A(plateau))
