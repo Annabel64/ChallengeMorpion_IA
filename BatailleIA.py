@@ -7,7 +7,7 @@ Created on Sat May  1 13:39:45 2021
 
 import time
 import numpy as np
-from random import randint
+from random import randint as rd
 
 # On définit le plateau
 class Plateau:    
@@ -263,8 +263,8 @@ def abSearch_A(plateau):
     #for a in Action(plateau):
         # Joue vers le milieu du plateau si on est les premiers à jouer
         if ( len(Action(plateau)) == 12*12 ):
-            r1 = randint(3,plateau.tab.shape[0]-4)
-            r2 = randint(3,plateau.tab.shape[0]-4)
+            r1 = rd(3,plateau.tab.shape[0]-4)
+            r2 = rd(3,plateau.tab.shape[0]-4)
             return [[r1,r2]]
         else : 
             res=heuristique(plateau)[0]
@@ -283,7 +283,7 @@ def abSearch_A(plateau):
 #retourne une liste d'action contenant les "meilleurs actions" en premier et les "mauvaises actions" en dernier
 def heuristique(plateau):
     """ Ne marche que sur les plateau de taille au moins 7x7"""
-    """On appelera, heuristique(plateau)"""
+    """ On appelera, heuristique(plateau)"""
     """ Elle permet de regarder en premier les actions ayant le plus de potentiel """
     compteur = -1
     listeAction = Action(plateau)
