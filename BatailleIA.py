@@ -1361,8 +1361,21 @@ def heuristique(plateau):
                         listeNote[compteur] += 0.25
                         
                         
-                    
-                    
+        #si une case est entourée par deux mêmes pions       
+        #en diagonale montante
+        if(ai>0 and aj>0 and ai<11 and aj<11 and plateau.tab[ai-1][aj-1]==plateau.tab[ai+1][aj+1]):
+            listeNote[compteur]+=1
+        #sur la même ligne
+        if(aj>0 and aj<11 and plateau.tab[ai][aj-1]==plateau.tab[ai][aj+1]):
+            listeNote[compteur]+=1
+        #en diagonale descendante
+        if(ai<11 and aj>0 and ai>0 and aj<11 and plateau.tab[ai+1][aj-1]==plateau.tab[ai-1][aj+1]):
+            listeNote[compteur]+=1
+        #sur la même colonne
+        if(ai>0 and ai<11 and plateau.tab[ai+1][aj]==plateau.tab[ai-1][aj]):
+            listeNote[compteur]+=1
+        
+        
             
             
     
