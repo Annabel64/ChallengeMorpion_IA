@@ -7,7 +7,7 @@ Created on Sat May  1 13:39:45 2021
 
 import time
 import numpy as np
-from random import randint as rd
+from random import randint
 
 # On définit le plateau
 class Plateau:    
@@ -40,9 +40,9 @@ def Action(plateau):
                 l.append([i,j])
     return l
 
-def Result(plateau,case,symbolJoueur):
+def Result(plateau,a,symbolJoueur):
     """actualise le plateau du jeu en ajoutant le pion du joueur en a=[x,y]"""
-    x,y=case[0],case[1]    
+    x,y=a[0],a[1]    
     plateau.tab[x][y]=symbolJoueur    
     return plateau
 
@@ -150,7 +150,6 @@ def Decision(plateau):
             print("valeurMax: ",valeurMax)
         Result(plateau, place,None)
     return maxAct
-
 #%% Elagage alpha beta
 def MaxValue_ab(plateau,alpha,beta):
     value=-2000
@@ -264,8 +263,8 @@ def abSearch_A(plateau):
     #for a in Action(plateau):
         # Joue vers le milieu du plateau si on est les premiers à jouer
         if ( len(Action(plateau)) == 12*12 ):
-            r1 = rd(3,plateau.tab.shape[0]-4)
-            r2 = rd(3,plateau.tab.shape[0]-4)
+            r1 = randint(3,plateau.tab.shape[0]-4)
+            r2 = randint(3,plateau.tab.shape[0]-4)
             return [[r1,r2]]
         else : 
             res=heuristique(plateau)[0]
@@ -284,7 +283,7 @@ def abSearch_A(plateau):
 #retourne une liste d'action contenant les "meilleurs actions" en premier et les "mauvaises actions" en dernier
 def heuristique(plateau):
     """ Ne marche que sur les plateau de taille au moins 7x7"""
-    """ On appelera, heuristique(plateau)"""
+    """On appelera, heuristique(plateau)"""
     """ Elle permet de regarder en premier les actions ayant le plus de potentiel """
     compteur = -1
     listeAction = Action(plateau)
@@ -300,1182 +299,799 @@ def heuristique(plateau):
     
 # Si la partie se termine en ajoutant une croix, on met l'action en tête de liste et on retourne la listes des actions
     
-# #%%  On regarde les colonnes ( pour les croix )
+#%%  On regarde les colonnes ( pour les croix )
     
 
-#         # Extrémités supérieur
+        # Extrémités supérieur
         
-#         if (ai == 0) :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        if (ai == 0) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' ):
+                listeNote[compteur] += 10000
             
-#         # Extrémités inférieur
+        # Extrémités inférieur
         
-#         elif (ai == plateau.tab.shape[0]-1) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-1) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x' ):
+                listeNote[compteur] += 10000
     
 
     
-#     # à une case du bord supérieur
+    # à une case du bord supérieur
     
 
-#         elif (ai == 1) :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == 1) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'x'):
+                listeNote[compteur] += 10000
     
-#     # à une case du bord inférieur
+    # à une case du bord inférieur
     
 
-#         elif (ai == plateau.tab.shape[0]-2) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-2) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'x'):
+                listeNote[compteur] += 10000
             
-#     # à deux cases du bord supérieur
+    # à deux cases du bord supérieur
     
 
-#         elif (ai == 2) :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == 2) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
+                listeNote[compteur] += 10000
     
-#     # à deux cases du bord inférieur
+    # à deux cases du bord inférieur
     
 
-#         elif (ai == plateau.tab.shape[0]-3) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-3) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
+                listeNote[compteur] += 10000
             
-#     # à trois cases ou plus des bords (inférieur et supérieur)
+    # à trois cases ou plus des bords (inférieur et supérieur)
     
 
-#         else :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        else :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'x' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'x'):
+                listeNote[compteur] += 10000
             
 
-# #%%  On regarde les lignes ( pour les croix )
+#%%  On regarde les lignes ( pour les croix )
 
 
-#         # Extrémités gauche
+        # Extrémités gauche
         
-#         if (aj == 0) :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        if (aj == 0) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' ):
+                listeNote[compteur] += 10000
             
-#         # Extrémités droite
+        # Extrémités droite
         
-#         elif (aj == plateau.tab.shape[1]-1) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' ):
+                listeNote[compteur] += 10000
     
 
     
-#     # à une case du bord gauche
+    # à une case du bord gauche
     
 
-#         elif (aj == 1) :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == 1) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x'):
+                listeNote[compteur] += 10000
     
-#     # à une case du bord droite
+    # à une case du bord droite
     
 
-#         elif (aj == plateau.tab.shape[1]-2) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'x'):
+                listeNote[compteur] += 10000
+                
+    # à deux cases du bord gauche
+    
+
+        elif (aj == 2) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
+                listeNote[compteur] += 10000
+    
+    # à deux cases du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
+                listeNote[compteur] += 10000
             
-#                 return listeAction
-#     # à deux cases du bord gauche
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         elif (aj == 2) :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
-    
-#     # à deux cases du bord droit
-    
-
-#         elif (aj == plateau.tab.shape[1]-3) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        else :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x'):
+                listeNote[compteur] += 10000
             
-#     # à trois cases ou plus des bords (gauche et droit)
+#%%  On regarde les diagonales à pentes négatives ( pour les croix )
+
+
+        # Extrémités gauche
+
+        if (aj == 0) : 
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] =='x' ):
+                    listeNote[compteur] += 10000
+            
+        # à une case du bord gauche
     
 
-#         else :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'x' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == 1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x'):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeNote[compteur] += 10000
             
-# #%%  On regarde les diagonales à pentes négatives ( pour les croix )
-
-
-#         # Extrémités gauche
-
-#         if (aj == 0) : 
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] =='x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-            
-#         # à une case du bord gauche
+        # à deux cases du bord gauche
     
 
-#         elif (aj == 1) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-            
-#         # à deux cases du bord gauche
-    
-
-#         elif (aj == 2) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai-1][aj-1] == plateau.tab[ai-2][aj-2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == 2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'x'):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai-1][aj-1] == plateau.tab[ai-2][aj-2] == 'x' ):
+                    listeNote[compteur] += 10000
    
             
    
-#     # Extrémités droite
+    # Extrémités droite
         
-#         elif (aj == plateau.tab.shape[1]-1) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeNote[compteur] += 10000
     
     
-#     # à une case du bord droite
+    # à une case du bord droite
     
-#         elif (aj == plateau.tab.shape[1]-2) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeNote[compteur] += 10000
     
     
-#     # à deux cases du bord droit
+    # à deux cases du bord droit
     
 
-#         elif (aj == plateau.tab.shape[1]-3) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeNote[compteur] += 10000
                 
             
-#     # à trois cases ou plus des bords (gauche et droit)
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] =='x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        else :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x'):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] =='x' ):
+                    listeNote[compteur] += 10000
 
-# #%%  On regarde les diagonales à pentes positives ( pour les croix )
+#%%  On regarde les diagonales à pentes positives ( pour les croix )
 
 
-#         # Extrémités gauche
+        # Extrémités gauche
 
-#         if (aj == 0) : 
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == 0) : 
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeNote[compteur] += 10000
             
-#         # à une case du bord gauche
+        # à une case du bord gauche
     
 
-#         elif (aj == 1) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == 1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeNote[compteur] += 10000
                 
             
-#         # à deux cases du bord gauche
+        # à deux cases du bord gauche
     
 
-#         elif (aj == 2) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == 2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeNote[compteur] += 10000
    
             
    
-#         # Extrémités droite
+        # Extrémités droite
         
-#         elif (aj == plateau.tab.shape[1]-1) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeNote[compteur] += 10000
     
     
-#         # à une case du bord droit
+        # à une case du bord droit
     
-#         elif (aj == plateau.tab.shape[1]-2) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeNote[compteur] += 10000
     
     
-#     # à deux cases du bord droit
+    # à deux cases du bord droit
     
 
-#         elif (aj == plateau.tab.shape[1]-3) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeNote[compteur] += 10000
                 
             
-#     # à trois cases ou plus des bords (gauche et droit)
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        else :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeNote[compteur] += 10000
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] =='x' ):
+                    listeNote[compteur] += 10000
                 
-# #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX              
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX              
 
-#     # Si la partie se termine en jouant un rond sur une case, on met la case en tête de liste et on retourne la listes des actions
+    # Si la partie se termine en jouant un rond sur une case, on met la case en tête de liste et on retourne la listes des actions
     
-# #%%  On regarde les colonnes ( pour les ronds )
+#%%  On regarde les colonnes ( pour les ronds )
     
 
-#         # Extrémités supérieur
+        # Extrémités supérieur
         
-#         if (ai == 0) :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        if (ai == 0) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' ):
+                listeNote[compteur] += 5000
             
-#         # Extrémités inférieur
+        # Extrémités inférieur
         
-#         elif (ai == plateau.tab.shape[0]-1) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-1) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' ):
+                listeNote[compteur] += 5000
     
 
     
-#     # à une case du bord supérieur
+    # à une case du bord supérieur
     
 
-#         elif (ai == 1) :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == 1) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o'):
+                listeNote[compteur] += 5000
     
-#     # à une case du bord inférieur
+    # à une case du bord inférieur
     
 
-#         elif (ai == plateau.tab.shape[0]-2) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-2) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'o'):
+                listeNote[compteur] += 5000
             
-#     # à deux cases du bord supérieur
+    # à deux cases du bord supérieur
     
 
-#         elif (ai == 2) :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == 2) :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o'):
+                listeNote[compteur] += 5000
     
-#     # à deux cases du bord inférieur
+    # à deux cases du bord inférieur
     
 
-#         elif (ai == plateau.tab.shape[0]-3) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-3) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai+1][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'o'):
+                listeNote[compteur] += 5000
             
-#     # à trois cases ou plus des bords (inférieur et supérieur)
+    # à trois cases ou plus des bords (inférieur et supérieur)
     
 
-#         else :
-#             if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        else :
+            if ( plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai+3][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == plateau.tab[ai-1][aj] == 'o' or plateau.tab[ai+1][aj] == plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o' or plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == plateau.tab[ai-3][aj] == 'o'):
+                listeNote[compteur] += 5000
             
 
-# #%%  On regarde les lignes ( pour les ronds )
+#%%  On regarde les lignes ( pour les ronds )
 
 
-#         # Extrémités gauche
+        # Extrémités gauche
         
-#         if (aj == 0) :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        if (aj == 0) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' ):
+                listeNote[compteur] += 5000
             
-#         # Extrémités droite
+        # Extrémités droite
         
-#         elif (aj == plateau.tab.shape[1]-1) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' ):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' ):
+                listeNote[compteur] += 5000
     
 
     
-#     # à une case du bord gauche
+    # à une case du bord gauche
     
 
-#         elif (aj == 1) :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == 1) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o'):
+                listeNote[compteur] += 5000
     
-#     # à une case du bord droite
+    # à une case du bord droite
     
 
-#         elif (aj == plateau.tab.shape[1]-2) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'o'):
+                listeNote[compteur] += 5000
             
-#     # à deux cases du bord gauche
+    # à deux cases du bord gauche
     
 
-#         elif (aj == 2) :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == 2) :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o'):
+                listeNote[compteur] += 5000
     
-#     # à deux cases du bord droit
+    # à deux cases du bord droit
     
 
-#         elif (aj == plateau.tab.shape[1]-3) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj+1] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'o'):
+                listeNote[compteur] += 5000
             
-#     # à trois cases ou plus des bords (gauche et droit)
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        else :
+            if ( plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj+3] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == plateau.tab[ai][aj-1] == 'o' or plateau.tab[ai][aj+1] == plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o' or plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == plateau.tab[ai][aj-3] == 'o'):
+                listeNote[compteur] += 5000
             
-# #%%  On regarde les diagonales à pentes négatives ( pour les ronds )
+#%%  On regarde les diagonales à pentes négatives ( pour les ronds )
 
 
-#         # Extrémités gauche
+        # Extrémités gauche
 
-#         if (aj == 0) : 
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == 0) : 
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o' ):
+                    listeNote[compteur] += 5000
             
-#         # à une case du bord gauche
+        # à une case du bord gauche
     
 
-#         elif (aj == 1) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == 1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o'):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeNote[compteur] += 5000
             
-#         # à deux cases du bord gauche
+        # à deux cases du bord gauche
     
 
-#         elif (aj == 2) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai-1][aj-1] == plateau.tab[ai-2][aj-2] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == 2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o'):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj+1] == plateau.tab[ai-1][aj-1] == plateau.tab[ai-2][aj-2] == 'o' ):
+                    listeNote[compteur] += 5000
    
             
    
-#     #     # Extrémités droite
+    #     # Extrémités droite
         
-#         elif (aj == plateau.tab.shape[1]-1) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeNote[compteur] += 5000
     
     
-#     # # à une case du bord droite
+    # # à une case du bord droite
     
-#         elif (aj == plateau.tab.shape[1]-2) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeNote[compteur] += 5000
     
     
-#     # à deux cases du bord droit
+    # à deux cases du bord droit
     
 
-#         elif (aj == plateau.tab.shape[1]-3) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
+                    listeNote[compteur] += 5000
                 
             
-#     # à trois cases ou plus des bords (gauche et droit)
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        else :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o'):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+1][aj+1]  == plateau.tab[ai+2][aj+2] == plateau.tab[ai+3][aj+3] == 'o' ):
+                    listeNote[compteur] += 5000
 
-# #%%  On regarde les diagonales à pentes positives ( pour les ronds )
+#%%  On regarde les diagonales à pentes positives ( pour les ronds )
 
 
-#         # Extrémités gauche
+        # Extrémités gauche
 
-#         if (aj == 0) : 
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == 0) : 
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeNote[compteur] += 5000
             
-#         # à une case du bord gauche
+        # à une case du bord gauche
     
 
-#         elif (aj == 1) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == 1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeNote[compteur] += 5000
                 
             
-#         # à deux cases du bord gauche
+        # à deux cases du bord gauche
     
 
-#         elif (aj == 2) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == 2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeNote[compteur] += 5000
    
             
    
-#         # Extrémités droite
+        # Extrémités droite
         
-#         elif (aj == plateau.tab.shape[1]-1) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-1) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeNote[compteur] += 5000
     
     
-#         # à une case du bord droit
+        # à une case du bord droit
     
-#         elif (aj == plateau.tab.shape[1]-2) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeNote[compteur] += 5000
     
     
-#     # à deux cases du bord droit
+    # à deux cases du bord droit
     
 
-#         elif (aj == plateau.tab.shape[1]-3) :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeNote[compteur] += 5000
                 
             
-#     # à trois cases ou plus des bords (gauche et droit)
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
-#                 if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        else :
+            if ( ai >= 0 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeNote[compteur] += 5000
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-1):
+                if ( plateau.tab[ai-1][aj+1]  == plateau.tab[ai-2][aj+2] == plateau.tab[ai-3][aj+3] == 'o' ):
+                    listeNote[compteur] += 5000
     
     
-#     #On priorise ensuite les actions où l'on gagne en deux tours
+    #On priorise ensuite les actions où l'on gagne en deux tours
     
     
-# #%%  On regarde les colonnes ( victoire en deux tours )
+#%%  On regarde les colonnes ( victoire en deux tours )
     
     
 
     
-#     # à une case du bord supérieur
+    # à une case du bord supérieur
     
 
-#         if (ai == 1) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        if (ai == 1) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
+                listeNote[compteur] += 1000
     
             
-#     # à deux cases du bord supérieur
+    # à deux cases du bord supérieur
     
 
-#         elif (ai == 2) :
-#             if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
-#             if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == 2) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
+                listeNote[compteur] += 1000
+            if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
+                listeNote[compteur] += 1000
             
             
-#     # à une case du bord inférieur
+    # à une case du bord inférieur
     
 
-#         elif (ai == plateau.tab.shape[0]-2) :
-#             if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-2) :
+            if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
+                listeNote[compteur] += 1000
             
     
-#     # à deux cases du bord inférieur
+    # à deux cases du bord inférieur
     
 
-#         elif (ai == plateau.tab.shape[0]-3) :
-#             if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
-#             if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (ai == plateau.tab.shape[0]-3) :
+            if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
+                listeNote[compteur] += 1000
+            if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
+                listeNote[compteur] += 1000
             
-#     # à trois cases ou plus des bords (inférieur et supérieur)
+    # à trois cases ou plus des bords (inférieur et supérieur)
     
 
-#         else :
-#             if ( ai != 0 and ai != plateau.tab.shape[0]-1 ):    
-#                 if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#                 if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#                 if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        else :
+            if ( ai != 0 and ai != plateau.tab.shape[0]-1 ):    
+                if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'x'):
+                    listeNote[compteur] += 1000
+                if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'x'):
+                    listeNote[compteur] += 1000
+                if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'x'):
+                    listeNote[compteur] += 1000
             
 
-# #%%  On regarde les lignes ( victoire en deux tours )
+#%%  On regarde les lignes ( victoire en deux tours )
 
     
-#     # à une case du bord gauche
+    # à une case du bord gauche
     
 
-#         if (aj == 1) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        if (aj == 1) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
+                listeNote[compteur] += 1000
     
             
-#     # à deux cases du bord gauche
+    # à deux cases du bord gauche
     
 
-#         elif (aj == 2) :
-#             if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
-#             if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == 2) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
+                listeNote[compteur] += 1000
+            if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
+                listeNote[compteur] += 1000
             
             
-#     # à une case du bord droit
+    # à une case du bord droit
     
 
-#         elif (aj == plateau.tab.shape[1]-2) :
-#             if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
+                listeNote[compteur] += 1000
             
     
-#     # à deux cases du bord droit
+    # à deux cases du bord droit
     
 
-#         elif (aj == plateau.tab.shape[1]-3) :
-#             if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
-#             if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
-#                 listeAction.remove(a)
-#                 listeAction.insert(0,a)
-#                 del listeAction[1:]
-#                 return listeAction
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
+                listeNote[compteur] += 1000
+            if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
+                listeNote[compteur] += 1000
             
-#     # à trois cases ou plus des bords (gauche et droit)
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( aj != 0 and aj != plateau.tab.shape[1]-1 ):         
-#                 if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#                 if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#                 if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        else :
+            if ( aj != 0 and aj != plateau.tab.shape[1]-1 ):         
+                if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'x'):
+                    listeNote[compteur] += 1000
+                if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'x'):
+                    listeNote[compteur] += 1000
+                if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'x'):
+                    listeNote[compteur] += 1000
 
-# #%% On regarde les diagonales à pentes négatives ( victoire en deux tours )
+#%% On regarde les diagonales à pentes négatives ( victoire en deux tours )
 
 
-#     # à une case du bord gauche
+    # à une case du bord gauche
         
     
-#         if (aj == 1) :
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[2:]
-#                     return listeAction
+        if (aj == 1) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeNote[compteur] += 1000
                 
-#     # à deux cases du bord gauche
+    # à deux cases du bord gauche
     
 
-#         if (aj == 2) :
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == 2) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                    listeNote[compteur] += 1000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeNote[compteur] += 1000
                 
                 
-#     # à une case du bord droit
+    # à une case du bord droit
     
 
-#         if (aj == plateau.tab.shape[1]-2) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeNote[compteur] += 1000
                 
-#         # à deux cases du bord droit
+        # à deux cases du bord droit
     
 
-#         if (aj == plateau.tab.shape[1]-3) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                    listeNote[compteur] += 1000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                    listeNote[compteur] += 1000
                 
-#         # à trois cases ou plus des bords (gauche et droit)
+        # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
-#                 if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
-#                     if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
-#                         listeAction.remove(a)
-#                         listeAction.insert(0,a)
-#                         del listeAction[1:]
-#                         return listeAction
-#             if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
-#                 if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
-#                     if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
-#                         listeAction.remove(a)
-#                         listeAction.insert(0,a)
-#                         del listeAction[1:]
-#                         return listeAction
-#             if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
-#                 if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
-#                     if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
-#                         #listeAction.remove(a)
-#                         listeAction.insert(0,a)
-#                         del listeAction[1:]
-#                         return listeAction
+        else :
+            if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
+                if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                    if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'x' ):
+                        listeNote[compteur] += 1000
+            if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
+                if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                    if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'x' ):
+                        listeNote[compteur] += 1000
+            if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
+                if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                    if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'x' ):
+                        listeNote[compteur] += 1000
+                        ###
                     
-# #%% On regarde les diagonales à pentes positives ( victoire en deux tours )
+#%% On regarde les diagonales à pentes positives ( victoire en deux tours )
 
 
-#     # à une case du bord gauche
+    # à une case du bord gauche
         
     
-#         if (aj == 1) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == 1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeNote[compteur] += 1000
                 
-#     # à deux cases du bord gauche
+    # à deux cases du bord gauche
     
 
-#         if (aj == 2) :
-#             if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
-#                 if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == 2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                    listeNote[compteur] += 1000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeNote[compteur] += 1000
                 
                 
-#     # à une case du bord droit
+    # à une case du bord droit
     
 
-#         if (aj == plateau.tab.shape[1]-2) :
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeNote[compteur] += 1000
                 
-#     # à deux cases du bord droit
+    # à deux cases du bord droit
     
 
-#         if (aj == plateau.tab.shape[1]-3) :
-#             if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
-#                 if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
-#             if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
-#                 if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
-#                     listeAction.remove(a)
-#                     listeAction.insert(0,a)
-#                     del listeAction[1:]
-#                     return listeAction
+        if (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                    listeNote[compteur] += 1000
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                    listeNote[compteur] += 1000
                 
-#     # à trois cases ou plus des bords (gauche et droit)
+    # à trois cases ou plus des bords (gauche et droit)
     
 
-#         else :
-#             if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
-#                 if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
-#                     if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
-#                         listeAction.remove(a)
-#                         listeAction.insert(0,a)
-#                         del listeAction[1:]
-#                         return listeAction
-#             if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
-#                 if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
-#                     if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
-#                         listeAction.remove(a)
-#                         listeAction.insert(0,a)
-#                         del listeAction[1:]
-#                         return listeAction
-#             if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
-#                 if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
-#                     if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
-#                         listeAction.remove(a)
-#                         listeAction.insert(0,a)
-#                         del listeAction[1:]
-#                         return listeAction
+        else :
+            if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
+                if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                    if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'x' ):
+                        listeNote[compteur] += 1000
+            if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
+                if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                    if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'x' ):
+                        listeNote[compteur] += 1000
+            if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
+                if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                    if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
+                        listeNote[compteur] += 1000
                 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX              
 # S'il n'y as pas d'action "évidente", on triera la liste des actions en fonction des notes (qu'on zippera a la liste d'action pour les trier a la fin par note) :
@@ -1537,66 +1153,6 @@ def heuristique(plateau):
         listeAction.append(elem[0])
     del listeAction[5:]
     return listeAction
-
-#%% BOUCLE FINALE
-
-
-def BoucleFinale():
-    plateau=Plateau()    
-    # plateau.tab=np.array([['x','o',None,'x','x',None,'x','o','x',None,'x','o'],
-    #                   ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
-    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
-    #                   ['o',None,'o',None,None,None,'o',None,'o','x','o',None],
-    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
-    #                   ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
-    #                   ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
-    #                   ['o',None,'o',None,'o','x','o',None,'o','x','o',None],
-    #                   ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
-    #                   ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
-    #                   ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
-    #                   ['o',None,'o',None,None,'x','o',None,'o','x','o',None]])
-    tour=1
-    i=-1
-    j=-1
-    symbolJoueur=''
-    while not Terminal_Test(plateau):        
-        print("Tour numéro ",tour,' :\n')
-        print(plateau)
-        
-        if(tour%2==0):
-            symbolJoueur='x'
-            if (tour <10):
-                print("i: ",i," j: ",j)
-                i=rd.randint(max(0,i-4),min(11,i+4))
-                j=rd.randint(max(0,j-4),min(11,j+4))
-                while (plateau.tab[i][j]!=None):
-                    i=rd.randint(max(0,i-4),min(11,i+4))
-                    j=rd.randint(max(0,j-4),min(11,j+4))
-                coup=[i,j]
-            else:
-                #on détermine le meilleur coup à jouer grâce à MinMax
-                coup=abSearch(plateau,0)   
-            print("coup",coup)
-            plateau=Result(plateau, coup, symbolJoueur)
-            
-        else:
-            symbolJoueur='o'
-            
-            #on demande à l'utilisateur où veut-il placer son pion
-            i=int(input("Veuillez saisir i"))
-            j=int(input("Veuillez saisir j"))
-            coup=[i,j] #juste pour le test
-            
-            plateau=Result(plateau, coup, symbolJoueur)
-            
-        tour+=1
-    print(plateau)
-    if(Terminal_Test(plateau)==None):
-        print("Match nul")
-    else :
-        #méthode afin de déterminer le gagnant :
-        print('Le joueur avec les pions ',symbolJoueur,' a gagné')
-    
 
 # %% TESTS
 
@@ -1685,6 +1241,20 @@ plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,No
 #                       [None,None,None,None,None,None,None,None,None,None,None,None],
 #                       [None,None,None,None,None,None,None,None,None,None,None,None],
 #                       [None,None,None,None,None,None,None,None,None,None,None,None]])
+
+
+plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,'x','x','x',None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None],
+                      [None,None,None,None,None,None,None,None,None,None,None,None]])
 
 
 
