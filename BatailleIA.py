@@ -18,8 +18,9 @@ class Plateau:
         else:
             self.tab=tab    
     def __str__(self):
-        msg=""
+        msg="  1 2 3 4 5 6 7 8 9 10 11 12 \n"
         for i in range(self.tab.shape[0]):
+            msg+=str(i)+"   "
             for j in range(self.tab.shape[1]):
                 if self.tab[i][j]==None:
                     msg+="_ "
@@ -1415,9 +1416,10 @@ def Morpion():
             symbolJoueur='o'
             ai=int(input("Veuillez saisir i: "))-1
             aj=int(input("Veuillez saisir j: "))-1
-            #on détermine le meilleur coup à jouer grâce à MinMax
-            coup=[ai,aj] #juste pour le test
-            
+            while (plateau.tab[i,j]!=None):
+                ai=int(input("Veuillez saisir i: "))-1
+                aj=int(input("Veuillez saisir j: "))-1
+            coup=[ai,aj] #juste pour le test            
             plateau=Result(plateau, coup, symbolJoueur)
             
         tour+=1
