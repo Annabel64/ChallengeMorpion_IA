@@ -1398,6 +1398,7 @@ def heuristique(plateau):
 
 def Morpion():
     plateau=Plateau()
+    print(plateau)
     tour=1
     while not Terminal_Test(plateau):        
         print("Tour numéro ",tour,' :\n')
@@ -1412,8 +1413,8 @@ def Morpion():
             
         else:
             symbolJoueur='o'
-            ai=int(input("Veuillez saisir i: "))+1
-            aj=int(input("Veuillez saisir j: "))+1
+            ai=int(input("Veuillez saisir i: "))-1
+            aj=int(input("Veuillez saisir j: "))-1
             #on détermine le meilleur coup à jouer grâce à MinMax
             coup=[ai,aj] #juste pour le test
             
