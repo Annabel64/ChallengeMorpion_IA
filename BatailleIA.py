@@ -1092,6 +1092,229 @@ def heuristique(plateau):
                 if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
                     if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'x' ):
                         listeNote[compteur] += 1000
+                        
+
+#%%  On regarde les colonnes ( défaite en deux tours )
+    
+    
+
+    
+    # à une case du bord supérieur
+    
+
+        if (ai == 1) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'o'):
+                listeNote[compteur] += 500
+    
+            
+    # à deux cases du bord supérieur
+    
+
+        elif (ai == 2) :
+            if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'o'):
+                listeNote[compteur] += 500
+            if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'o'):
+                listeNote[compteur] += 500
+            
+            
+    # à une case du bord inférieur
+    
+
+        elif (ai == plateau.tab.shape[0]-2) :
+            if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o'):
+                listeNote[compteur] += 500
+            
+    
+    # à deux cases du bord inférieur
+    
+
+        elif (ai == plateau.tab.shape[0]-3) :
+            if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o'):
+                listeNote[compteur] += 500
+            if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'o'):
+                listeNote[compteur] += 500
+            
+    # à trois cases ou plus des bords (inférieur et supérieur)
+    
+
+        else :
+            if ( ai != 0 and ai != plateau.tab.shape[0]-1 ):    
+                if ( plateau.tab[ai-3][aj] == plateau.tab[ai+1][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai-2][aj] == 'o'):
+                    listeNote[compteur] += 500
+                if ( plateau.tab[ai-2][aj] == plateau.tab[ai+2][aj] == None and plateau.tab[ai-1][aj] == plateau.tab[ai+1][aj] == 'o'):
+                    listeNote[compteur] += 500
+                if ( plateau.tab[ai-1][aj] == plateau.tab[ai+3][aj] == None and plateau.tab[ai+1][aj] == plateau.tab[ai+2][aj] == 'o'):
+                    listeNote[compteur] += 500
+            
+
+#%%  On regarde les lignes ( défaite en deux tours )
+
+    
+    # à une case du bord gauche
+    
+
+        if (aj == 1) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'o'):
+                listeNote[compteur] += 500
+    
+            
+    # à deux cases du bord gauche
+    
+
+        elif (aj == 2) :
+            if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'o'):
+                listeNote[compteur] += 500
+            if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'o'):
+                listeNote[compteur] += 500
+            
+            
+    # à une case du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-2) :
+            if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o'):
+                listeNote[compteur] += 500
+            
+    
+    # à deux cases du bord droit
+    
+
+        elif (aj == plateau.tab.shape[1]-3) :
+            if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o'):
+                listeNote[compteur] += 500
+            if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'o'):
+                listeNote[compteur] += 500
+            
+    # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( aj != 0 and aj != plateau.tab.shape[1]-1 ):         
+                if ( plateau.tab[ai][aj-3] == plateau.tab[ai][aj+1] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj-2] == 'o'):
+                    listeNote[compteur] += 500
+                if ( plateau.tab[ai][aj-2] == plateau.tab[ai][aj+2] == None and plateau.tab[ai][aj-1] == plateau.tab[ai][aj+1] == 'o'):
+                    listeNote[compteur] += 500
+                if ( plateau.tab[ai][aj-1] == plateau.tab[ai][aj+3] == None and plateau.tab[ai][aj+1] == plateau.tab[ai][aj+2] == 'o'):
+                    listeNote[compteur] += 500
+
+#%% On regarde les diagonales à pentes négatives ( défaite en deux tours )
+
+
+    # à une case du bord gauche
+        
+    
+        if (aj == 1) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
+                    listeNote[compteur] += 500
+                
+    # à deux cases du bord gauche
+    
+
+        if (aj == 2) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
+                    listeNote[compteur] += 500
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeNote[compteur] += 500
+                
+                
+    # à une case du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeNote[compteur] += 500
+                
+        # à deux cases du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                    listeNote[compteur] += 500
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                    listeNote[compteur] += 500
+                
+        # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
+                if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                    if ( plateau.tab[ai-3][aj-3] == plateau.tab[ai+1][aj+1] == None and plateau.tab[ai-2][aj-2] == plateau.tab[ai-1][aj-1] == 'o' ):
+                        listeNote[compteur] += 500
+            if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
+                if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                    if ( plateau.tab[ai-2][aj-2] == plateau.tab[ai+2][aj+2] == None and plateau.tab[ai-1][aj-1] == plateau.tab[ai+1][aj+1] == 'o' ):
+                        listeNote[compteur] += 500
+            if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
+                if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                    if ( plateau.tab[ai-1][aj-1] == plateau.tab[ai+3][aj+3] == None and plateau.tab[ai+1][aj+1] == plateau.tab[ai+2][aj+2] == 'o' ):
+                        listeNote[compteur] += 500
+                        ###
+                    
+#%% On regarde les diagonales à pentes positives ( défaite en deux tours )
+
+
+    # à une case du bord gauche
+        
+    
+        if (aj == 1) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeNote[compteur] += 500
+                
+    # à deux cases du bord gauche
+    
+
+        if (aj == 2) :
+            if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                    listeNote[compteur] += 500
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeNote[compteur] += 500
+                
+                
+    # à une case du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-2) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeNote[compteur] += 500
+                
+    # à deux cases du bord droit
+    
+
+        if (aj == plateau.tab.shape[1]-3) :
+            if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                    listeNote[compteur] += 500
+            if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                    listeNote[compteur] += 500
+                
+    # à trois cases ou plus des bords (gauche et droit)
+    
+
+        else :
+            if ( aj >= 1 and aj <= plateau.tab.shape[1]-2 ):         
+                if ( ai >= 1 and ai <= plateau.tab.shape[0]-4):
+                    if ( plateau.tab[ai+3][aj-3] == plateau.tab[ai-1][aj+1] == None and plateau.tab[ai+2][aj-2] == plateau.tab[ai+1][aj-1] == 'o' ):
+                        listeNote[compteur] += 500
+            if ( aj >= 2 and aj <= plateau.tab.shape[1]-3 ): 
+                if ( ai >= 2 and ai <= plateau.tab.shape[0]-3):
+                    if ( plateau.tab[ai+2][aj-2] == plateau.tab[ai-2][aj+2] == None and plateau.tab[ai+1][aj-1] == plateau.tab[ai-1][aj+1] == 'o' ):
+                        listeNote[compteur] += 500
+            if ( aj >= 3 and aj <= plateau.tab.shape[1]-4 ): 
+                if ( ai >= 3 and ai <= plateau.tab.shape[0]-2):
+                    if ( plateau.tab[ai+1][aj-1] == plateau.tab[ai-3][aj+3] == None and plateau.tab[ai-1][aj+1] == plateau.tab[ai-2][aj+2] == 'o' ):
+                        listeNote[compteur] += 500
                 
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX              
 # S'il n'y as pas d'action "évidente", on triera la liste des actions en fonction des notes (qu'on zippera a la liste d'action pour les trier a la fin par note) :
@@ -1131,13 +1354,11 @@ def heuristique(plateau):
     
         # Cas où l'action est à trois cases ou plus du bord
         
-        ifor k in range (0,8):
-            if (ai-3+k>-1 and ai-3+k<8):
-                for l in range(0,8):
-                    if (aj-3+l>-1 and aj-3+l<8 and math.sqrt((ai-(ai-3+k))**2-(aj-(aj-3+l))**2)!=0):
-                        if (plateau.tab[ai-3+k][aj-3+l] != None):
-                            listeNote[compteur] += 5/math.sqrt((ai-(ai-3+k))**2-(aj-(aj-3+l))**2)
-        listeNote[compteur]/=10
+        if ( ai >= 3 and ai <= plateau.tab.shape[0]-4 and aj >= 3 and aj <= plateau.tab.shape[1]-4):
+            for k in range(ai-3,ai+4):
+                for l in range(aj-3,aj+4):
+                    if (plateau.tab[k][l] != None):
+                        listeNote[compteur] += 0.25
                         
                         
                     
@@ -1250,13 +1471,27 @@ plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,No
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
-                      [None,None,None,None,'x','x','x',None,None,None,None,None],
+                      [None,None,None,None,'o','o',None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None],
                       [None,None,None,None,None,None,None,None,None,None,None,None]])
+
+
+# plateau.tab=np.array([['x','o',None,None,'x',None,'x','o','x',None,'x','o'],
+#                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,None,'o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o',None,'o','x',None,'x','o'],
+#                       ['o',None,'o','x',None,'x','o',None,'o','x','o',None],
+#                       ['x','o',None,None,'x','o','x','o','x',None,'x','o'],
+#                       ['o',None,'o',None,None,'x','o',None,'o','x','o',None]])
 
 
 
@@ -1334,17 +1569,3 @@ aj = 0
 # print(l)
 a= heuristique(plateau)
 print(a)
-
-def f(ai,aj,plateau):
-    compteur=0
-    for k in range (0,8):
-            if (ai-3+k>-1 and ai-3+k<8):
-                for l in range(0,8):
-                    print(((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5))
-                    if (aj-3+l>-1 and aj-3+l<8 and ((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)!=0):
-                        if (plateau.tab[ai-3+k][aj-3+l] != None):                            
-                            compteur+= 5/((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)
-    return compteur/10
-
-res=f(11,11,plateau)
-print(res)
