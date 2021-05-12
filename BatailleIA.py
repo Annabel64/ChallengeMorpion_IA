@@ -40,11 +40,15 @@ def Action(plateau):
                 l.append([i,j])
     return l
 
-def Result(plateau,a,symbolJoueur):
+def Result(plateau,case,symbolJoueur):
     """actualise le plateau du jeu en ajoutant le pion du joueur en a=[x,y]"""
-    x,y=a[0],a[1]    
+    x,y=case[0],case[1]    
     plateau.tab[x][y]=symbolJoueur    
     return plateau
+
+def distance(case,case): #case=[x,y]
+    """retourne la distance euclidienne qui sépare deux cases"""
+    
 
 
 def Terminal_Test(plateau):
@@ -150,6 +154,7 @@ def Decision(plateau):
             print("valeurMax: ",valeurMax)
         Result(plateau, place,None)
     return maxAct
+
 #%% Elagage alpha beta
 def MaxValue_ab(plateau,alpha,beta):
     value=-2000
