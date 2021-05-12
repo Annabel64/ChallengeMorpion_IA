@@ -1131,11 +1131,13 @@ def heuristique(plateau):
     
         # Cas où l'action est à trois cases ou plus du bord
         
-        if ( ai >= 3 and ai <= plateau.tab.shape[0]-4 and aj >= 3 and aj <= plateau.tab.shape[1]-4):
-            for k in range(ai-3,ai+4):
-                for l in range(aj-3,aj+4):
-                    if (plateau.tab[k][l] != None):
-                        listeNote[compteur] += 0.25
+        ifor k in range (0,8):
+            if (ai-3+k>-1 and ai-3+k<8):
+                for l in range(0,8):
+                    if (aj-3+l>-1 and aj-3+l<8 and math.sqrt((ai-(ai-3+k))**2-(aj-(aj-3+l))**2)!=0):
+                        if (plateau.tab[ai-3+k][aj-3+l] != None):
+                            listeNote[compteur] += 5/math.sqrt((ai-(ai-3+k))**2-(aj-(aj-3+l))**2)
+        listeNote[compteur]/=10
                         
                         
                     
@@ -1332,3 +1334,17 @@ aj = 0
 # print(l)
 a= heuristique(plateau)
 print(a)
+
+def f(ai,aj,plateau):
+    compteur=0
+    for k in range (0,8):
+            if (ai-3+k>-1 and ai-3+k<8):
+                for l in range(0,8):
+                    print(((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5))
+                    if (aj-3+l>-1 and aj-3+l<8 and ((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)!=0):
+                        if (plateau.tab[ai-3+k][aj-3+l] != None):                            
+                            compteur+= 5/((ai-(ai-3+k))**2+(aj-(aj-3+l))**2)**(0.5)
+    return compteur/10
+
+res=f(11,11,plateau)
+print(res)
