@@ -1428,7 +1428,7 @@ def Morpion():
         if(tour%2==0): # alors le prochain a joué est 'x' donc celui qui vient de jouer est 'o'
             print('Le joueur avec les pions "o" a gagné')
         else:
-            print('Le joueur avec les pions "o" a gagné')
+            print('Le joueur avec les pions "x" a gagné')
     
 Morpion()
 
