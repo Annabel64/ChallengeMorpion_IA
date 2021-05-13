@@ -18,14 +18,17 @@ class Plateau:
         else:
             self.tab=tab    
     def __str__(self):
-        msg="  1 2 3 4 5 6 7 8 9 10 11 12 \n"
+        msg="   1  2  3  4  5  6  7  8  9 10 11 12 \n"
         for i in range(self.tab.shape[0]):
-            msg+=str(i+1)+"   "
+            if (i+1<10):
+                msg+=str(i+1)+"  "
+            else:
+                msg+=str(i+1)+" "
             for j in range(self.tab.shape[1]):
                 if self.tab[i][j]==None:
-                    msg+="_ "
+                    msg+="_  "
                 else:
-                    msg+=str(self.tab[i][j])+" "
+                    msg+=str(self.tab[i][j])+"  "
             msg+="\n"
         return msg
 
@@ -1163,4 +1166,4 @@ plateau.tab=np.array([[None,None,None,None,None,None,None,None,None,None,None,No
                       [None,None,None,None,None,None,None,None,None,None,None,None]])
 
 #print(Terminal_Test(plateau))
-
+# print(plateau)
