@@ -1116,15 +1116,15 @@ def Morpion():
             
             #on détermine le meilleur coup à jouer grâce à MinMax
             coup=abSearch_A(plateau) #juste pour le test
-            
+            print([coup[1]+1,[coup[0]+1]])
             plateau=Result(plateau, coup, symbolJoueur)
             temps=time.time()-temps
             print("\nTemps mis par l'algorithme : ",temps," sec")
             
         else:
             symbolJoueur='o'
-            ai=int(input("Veuillez saisir i: "))-1
-            aj=int(input("Veuillez saisir j: "))-1
+            aj=int(input("Veuillez saisir colonne: "))-1
+            ai=int(input("Veuillez saisir ligne: "))-1
             while (plateau.tab[ai,aj]!=None or ai==-1 or aj==-1):
                 if(ai==-1 or aj==-1):
                     print("ai ou aj ne peuvent pas prendre la valeur 0")
