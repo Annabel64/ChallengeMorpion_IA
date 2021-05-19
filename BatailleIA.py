@@ -1103,7 +1103,13 @@ def heuristique(plateau):
 
 def Morpion():
     plateau=Plateau()
-    tour=1
+    debut=input("Voulez vous commencer? (yes/no)")
+    if (debut=='yes'):
+        tour=1
+    else: 
+        tour=1
+        coup=[5,5]
+        plateau=Result(plateau, coup, 'x')
     print("\ni correspond aux lignes, j aux colonnes\n")
     while not Terminal_Test(plateau):    
         print(plateau)
