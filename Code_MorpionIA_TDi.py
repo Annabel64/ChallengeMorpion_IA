@@ -11,6 +11,8 @@ Created on Sat May  1 13:39:45 2021
 #Annabel MERCERON
 #Victor MONNOYEUR
 
+#%%
+
 import time
 import numpy as np
 import math
